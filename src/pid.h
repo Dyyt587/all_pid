@@ -4,7 +4,7 @@
  * @LastEditors: dyyt 805207319@qq.com
  * @LastEditTime: 2023-07-23 01:44:41
  * @FilePath: \undefinedc:\Users\LENOVO\Documents\programs\PID\VS_Project\ConsoleApplication1\ConsoleApplication1\pid.h
- * @Description: pid¿â
+ * @Description: pidåº“
  */
 
 #ifndef _PID_H
@@ -20,298 +20,190 @@ extern "C"
 #define u8 unsigned char
 #endif
 
-#define TARGET_MAX FLT_MAX //Ä¬ÈÏ×î´óÏÞ·ùÖµ
-#define OUT_MAX    FLT_MAX //Ä¬ÈÏ×î´óÏÞ·ùÖµ
-#define PID_TYPE float //¸Ã¿âÊ¹ÓÃµÄÊý¾ÝÀàÐÍ
+#define TARGET_MAX FLT_MAX // é»˜è®¤æœ€å¤§é™å¹…å€¼
+#define OUT_MAX FLT_MAX    // é»˜è®¤æœ€å¤§é™å¹…å€¼
 
-    //×¢Òâ£¬¹³×Óº¯Êý¶ÔËùÓÐpid½Úµã¶¼ÓÐÐ§£¬µ«Ã¿¸ö½Úµã¶¼¿É×ÔÐÐ±àÐ´ÊôÓÚ×Ô¼ºµÄº¯Êý
-#define USE_HOOK_FIRST 0//Ê¹ÓÃ¹³×Óº¯Êý£¬×ÔÐÐ±àÐ´
+#define PID_TYPE float // è¯¥åº“ä½¿ç”¨çš„æ•°æ®ç±»åž‹
+
+// æ³¨æ„ï¼Œé’©å­å‡½æ•°å¯¹æ‰€æœ‰pidèŠ‚ç‚¹éƒ½æœ‰æ•ˆï¼Œä½†æ¯ä¸ªèŠ‚ç‚¹éƒ½å¯è‡ªè¡Œç¼–å†™å±žäºŽè‡ªå·±çš„å‡½æ•°
+#define USE_HOOK_FIRST 0 // ä½¿ç”¨é’©å­å‡½æ•°ï¼Œè‡ªè¡Œç¼–å†™
 #define USE_HOOK_END 0
 
 #define ABS(x) ((x > 0) ? x : -x)
 
-    enum {
+    enum
+    {
         STOP = 0U,
-		PID_ENABLE,
+        PID_ENABLE,
         PAUSE,
 
     };
 
-    typedef enum PID_Mode
+    typedef enum ALL_PID_Mode
     {
-        PID_POSITION_NULL = 0,
-        //PID_POSITION_PARALLERL,
-        //PID_POSITION_CASCADE,
-        PID_INCREMENT_NULL,
-        //PID_INCREMENT_PARALLERL,
-        //PID_INCREMENT_CASCADE
-    }PID_Mode;
+        PID_POSITION = 0,
+        PID_INCREMENT,
 
-    typedef enum PID_I_Function
-    {
-        PID_INTEGRAL_NORMAL = 0,		//ÆÕÍ¨»ý·Ö
-        PID_INTEGRAL_SEPARATION,	//»ý·Ö·ÖÀë
-        PID_INTEGRAL_SATURATION,	//¿¹±¥ºÍ»ý·Ö
-        PID_INTEGRAL_SPEED,			//±äËÙ»ý·Ö
-        PID_INTEGRAL_TRAPEZIOD		//ÌÝÐÎ»ý·Ö
-    }PID_I_Function;
+    } ALL_PID_Mode;
 
-    typedef enum PID_D_Function
+    typedef enum ALL_PID_I_Function
     {
-        PID_DIFFERENTIAL_COMPLETE = 0,			//ÍêÈ«Î¢·Ö
-        PID_DIFFERENTIAL_PART,					//²»ÍêÈ«Î¢·Ö
-        PID_DIFFERENTIAL_PREVIOUS 			//Î¢·ÖÏÈÐÐ
-    }PID_D_Function;
+        PID_INTEGRAL_NORMAL = 0, // æ™®é€šç§¯åˆ†
+        PID_INTEGRAL_SEPARATION, // ç§¯åˆ†åˆ†ç¦»
+        PID_INTEGRAL_SATURATION, // æŠ—é¥±å’Œç§¯åˆ†
+        PID_INTEGRAL_SPEED,      // å˜é€Ÿç§¯åˆ†
+        PID_INTEGRAL_TRAPEZIOD   // æ¢¯å½¢ç§¯åˆ†
+    } ALL_PID_I_Function;
+
+    typedef enum ALL_PID_D_Function
+    {
+        PID_DIFFERENTIAL_COMPLETE = 0, // å®Œå…¨å¾®åˆ†
+        PID_DIFFERENTIAL_PART,         // ä¸å®Œå…¨å¾®åˆ†
+        PID_DIFFERENTIAL_PREVIOUS      // å¾®åˆ†å…ˆè¡Œ
+    } ALL_PID_D_Function;
 
     typedef struct
     {
         u8 run_status;
-        //u8 use_predict;
-        PID_I_Function integral_way;
-        PID_D_Function differential_way;
-        PID_Mode pid_mode;//ÅÐ¶¨pidÎªÔöÁ¿»òÕßÎ»ÖÃ
-    }PID_Flag;
+        ALL_PID_I_Function integral_way;
+        ALL_PID_D_Function differential_way;
+        ALL_PID_Mode pid_mode; // åˆ¤å®špidä¸ºå¢žé‡æˆ–è€…ä½ç½®
+    } ALL_PID_Flag;
 
-    typedef union {
-        float kd_lpf;						//²»ÍêÈ«Î¢·ÖÏµÊý
-        PID_TYPE kd_pre;						//Î¢·ÖÏÈÐÐÏµÊý
-    }kd_u;
+    typedef union
+    {
+        float kd_lpf;    // ä¸å®Œå…¨å¾®åˆ†ç³»æ•°
+        PID_TYPE kd_pre; // å¾®åˆ†å…ˆè¡Œç³»æ•°
+    } kd_u;
+
     typedef struct PID_Parameter
     {
-        PID_TYPE kp;								//±ÈÀýÏµÊý
-        PID_TYPE ki;								//»ý·ÖÏµÊý
-        PID_TYPE kd;								//Î¢·ÖÏµÊý
-        PID_TYPE kf;								//Ç°À¡ÏµÊý
+        PID_TYPE kp; // æ¯”ä¾‹ç³»æ•°
+        PID_TYPE ki; // ç§¯åˆ†ç³»æ•°
+        PID_TYPE kd; // å¾®åˆ†ç³»æ•°
+        PID_TYPE kf; // å‰é¦ˆç³»æ•°
 
-        //PID_TYPE kd_lpf;						//²»ÍêÈ«Î¢·ÖÏµÊý
-        //PID_TYPE kd_pre;						//Î¢·ÖÏÈÐÐÏµÊý
         kd_u kd_;
-        PID_TYPE k_pre;						//Ô¤²âÏµÊý
+        PID_TYPE k_pre; // é¢„æµ‹ç³»æ•°
 
-        PID_TYPE target_limit;				//Ä¿±êÖµÏÞ·ù
-        PID_TYPE bias_limit;					//Îó²îÏÞ·ù
-        PID_TYPE bias_dead_zone;			//Ð¡ÓÚÕâ¸öÖµ½«²»½øÐÐPID²Ù×÷
-        PID_TYPE bias_for_integral;	//¿ªÊ¼»ý·ÖµÄÎó²î	--	ÓÃÓÚ»ý·Ö·ÖÀë
-        PID_TYPE integral_limit;			//»ý·ÖÏÞ·ù				--	ÓÃÓÚ¿¹»ý·Ö±¥ºÍ
-        PID_TYPE out_limit;					//Êä³öÏÞ·ù
-        //PID_TYPE a;               //µÍÍ¨ÂË²¨Æ÷²ÎÊý          -- ÓÃÓÚ´øÒ»½×µÍÍ¨µÄÎ¢·Ö
-        PID_TYPE k;               //²¢ÐÐpidÏà¼ÓÏµÊý          -- ÓÃÓÚ²¢ÐÐpid
+        PID_TYPE target_limit;      // ç›®æ ‡å€¼é™å¹…
+        PID_TYPE bias_limit;        // è¯¯å·®é™å¹…
+        PID_TYPE bias_dead_zone;    // å°äºŽè¿™ä¸ªå€¼å°†ä¸è¿›è¡ŒPIDæ“ä½œ
+        PID_TYPE bias_for_integral; // å¼€å§‹ç§¯åˆ†çš„è¯¯å·®	--	ç”¨äºŽç§¯åˆ†åˆ†ç¦»
+        PID_TYPE integral_limit;    // ç§¯åˆ†é™å¹…				--	ç”¨äºŽæŠ—ç§¯åˆ†é¥±å’Œ
+        PID_TYPE out_limit;         // è¾“å‡ºé™å¹…
+ 
+        PID_TYPE k; // å¹¶è¡Œpidç›¸åŠ ç³»æ•°          -- ç”¨äºŽå¹¶è¡Œpid
 
-        PID_TYPE out; //´Ë½ÚµãpidÊä³ö
+        PID_TYPE out; // æ­¤èŠ‚ç‚¹pidè¾“å‡º
 
-        PID_TYPE target; //ÆÚÍûÖµ
-        PID_TYPE present;//µ±Ç°Öµ
-        PID_TYPE predict;//Ô¤²âÖµ
+        PID_TYPE target;  // æœŸæœ›å€¼
+        PID_TYPE present; // å½“å‰å€¼
+        PID_TYPE predict; // é¢„æµ‹å€¼
 
 #if USE_HOOK_FIRST
-        void (*user_hook_first)(PID_T* pid);//¹³×Óº¯Êý£¬ÔÚ¼ÆËãresultÖ®Ç°£¬ÆäËû±ØÒª²Ù×÷Ö®ºó
+        void (*user_hook_first)(apid_t *pid); // é’©å­å‡½æ•°ï¼Œåœ¨è®¡ç®—resultä¹‹å‰ï¼Œå…¶ä»–å¿…è¦æ“ä½œä¹‹åŽ
 #endif
 #if USE_HOOK_FIRST
-        void (*user_hook_out)(PID_T* pid);//¹³×Óº¯Êý£¬ÔÚ¼ÆËãresultÖ®ºó£¬ÏÞ·ùÖ®Ç°
+        void (*user_hook_out)(apid_t *pid); // é’©å­å‡½æ•°ï¼Œåœ¨è®¡ç®—resultä¹‹åŽï¼Œé™å¹…ä¹‹å‰
 #endif
-    }PID_Parameter;
+    } PID_Parameter;
 
-    //ÔöÁ¿Ê½pid
-    // n
-    //±ÈÀýP:    e(k) - e(k - 1)   µ±Ç°Îó²î - ÉÏ´ÎÎó²î
+    // å¢žé‡å¼pid
+    //  n
+    // æ¯”ä¾‹P:    e(k) - e(k - 1)   å½“å‰è¯¯å·® - ä¸Šæ¬¡è¯¯å·®
     //
-    //»ý·ÖI : e(i)     µ±Ç°Îó²î
+    // ç§¯åˆ†I : e(i)     å½“å‰è¯¯å·®
     //
-    //Î¢·ÖD : e(k) - 2e(k - 1) + e(k - 2)   µ±Ç°Îó²î - 2 * ÉÏ´ÎÎó²î + ÉÏÉÏ´ÎÎó²î
+    // å¾®åˆ†D : e(k) - 2e(k - 1) + e(k - 2)   å½“å‰è¯¯å·® - 2 * ä¸Šæ¬¡è¯¯å·® + ä¸Šä¸Šæ¬¡è¯¯å·®
 
-    //Î»ÖÃÊ½
+    // ä½ç½®å¼
     //
-    //e(k) : ÓÃ»§Éè¶¨µÄÖµ£¨Ä¿±êÖµ£© - ¿ØÖÆ¶ÔÏóµÄµ±Ç°µÄ×´Ì¬Öµ
+    // e(k) : ç”¨æˆ·è®¾å®šçš„å€¼ï¼ˆç›®æ ‡å€¼ï¼‰ - æŽ§åˆ¶å¯¹è±¡çš„å½“å‰çš„çŠ¶æ€å€¼
     //
-    //±ÈÀýP : e(k)
+    // æ¯”ä¾‹P : e(k)
     //
-    //»ý·ÖI : ¡Æe(i)     Îó²îµÄÀÛ¼Ó(°üÀ¨e(k))
+    // ç§¯åˆ†I : âˆ‘e(i)     è¯¯å·®çš„ç´¯åŠ (åŒ…æ‹¬e(k))
     //
-    //Î¢·ÖD : e(k) - e(k - 1)  Õâ´ÎÎó²î - ÉÏ´ÎÎó²î
+    // å¾®åˆ†D : e(k) - e(k - 1)  è¿™æ¬¡è¯¯å·® - ä¸Šæ¬¡è¯¯å·®
 
     typedef struct PID_Process
     {
-        PID_TYPE bias; //×ÜÎó²î
-        PID_TYPE integral_bias;//iÎó²î
-        PID_TYPE differential_bias;//dÎó²î
-        PID_TYPE lpf_differential_bias;//ÉÏ´ÎdÎó²î
+        PID_TYPE bias;                  // æ€»è¯¯å·®
+        PID_TYPE integral_bias;         // iè¯¯å·®
+        PID_TYPE differential_bias;     // dè¯¯å·®
+        PID_TYPE lpf_differential_bias; // ä¸Šæ¬¡dè¯¯å·®
 
-        PID_TYPE feedforward; //Ç°À¡Öµ
-        PID_TYPE predict;  //Ô¤²âÖµ
+        PID_TYPE feedforward; // å‰é¦ˆå€¼
+        PID_TYPE predict;     // é¢„æµ‹å€¼
 
-        PID_TYPE last_target; //ÉÏ´ÎÆÚÍûÖµ
-        PID_TYPE last_bias; //ÉÏ´ÎÎó²î
-        PID_TYPE lastlast_bias; //ÉÏÉÏ´ÎÎó²î
+        PID_TYPE last_target;   // ä¸Šæ¬¡æœŸæœ›å€¼
+        PID_TYPE last_bias;     // ä¸Šæ¬¡è¯¯å·®
+        PID_TYPE lastlast_bias; // ä¸Šä¸Šæ¬¡è¯¯å·®
 
-    }PID_Process;
+    } PID_Process;
 
-    typedef struct PID_T PID_t;
-    typedef struct _PID_T PID_T;
+    typedef struct _PID_T apid_t;
 
-    typedef struct {
-        PID_Mode mode;
-        PID_I_Function ifunc;
-        PID_D_Function dfunc;
+    typedef struct
+    {
+        ALL_PID_Mode mode;
+        ALL_PID_I_Function ifunc;
+        ALL_PID_D_Function dfunc;
         PID_TYPE kp;
         PID_TYPE ki;
         PID_TYPE kd;
-    }PID_Config_t;
-    struct _PID_T
+    } PID_Config_t;
+
+    typedef struct _PID_T
     {
-        PID_Flag		flag;
-        PID_Parameter	parameter;
-        PID_Process 	process;
+        ALL_PID_Flag flag;
+        PID_Parameter parameter;
+        PID_Process process;
         PID_TYPE cycle;
-        //PID_T* next_pid;//ÓÃÓÚÊµÏÖpidµÄ²¢ÐÐ»ò´®¼¶
-        void(*handle)(PID_T* pid, PID_TYPE cycle);
-        void(*i_handle)(PID_T* pid);
-        void(*d_handle)(PID_T* pid);
-        void(*variable)(PID_T* pid);//±äËÙ»ý·Ö
-    };
+        void (*handle)(apid_t *pid, PID_TYPE cycle);
+        void (*i_handle)(apid_t *pid);
+        void (*d_handle)(apid_t *pid);
+        void (*variable)(apid_t *pid); // å˜é€Ÿç§¯åˆ†
+    }apid_t;
 
-    //return a * X(n) + (1 - a) * Y(n - 1)
+    void APID_STOP(apid_t *pid);
+    void APID_Pause(apid_t *pid);
+    void APID_Enable(apid_t *pid);
+    void APID_Init(apid_t *pid, ALL_PID_Mode mode, PID_TYPE kp, PID_TYPE ki, PID_TYPE kd);
+	void PID_Reset(apid_t* pid);
 
+    void APID_SET_I_Function(apid_t *pid, ALL_PID_I_Function imode, ...);
+    void APID_SET_D_Function(apid_t *pid, ALL_PID_D_Function dmode, ...);
+#define APID_I_NORMAL(pid) APID_SET_I_Function(pid, PID_INTEGRAL_NORMAL)                       // æ™®é€šç§¯åˆ†
+#define APID_I_SEPARATION(pid, value) APID_SET_I_Function(pid, PID_INTEGRAL_SEPARATION, value) // ç§¯åˆ†åˆ†ç¦»
+#define APID_I_SATURATION(pid, value) APID_SET_I_Function(pid, PID_INTEGRAL_SATURATION, value) // æŠ—é¥±å’Œç§¯åˆ†
+#define APID_I_SPEED(pid, func) APID_SET_I_Function(pid, PID_INTEGRAL_SPEED, func)             // å˜é€Ÿç§¯åˆ†
+#define APID_I_TRAPEZIOD(pid) APID_SET_I_Function(pid, PID_INTEGRAL_TRAPEZIOD)                 // æ¢¯å½¢ç§¯åˆ†
 
-    void PID_STOP(PID_T* pid);
-    void PID_Pause(PID_T* pid);
-    void PID_Enable(PID_T* pid);
-    void PID_Init(PID_T* pid, PID_Mode mode, PID_TYPE kp, PID_TYPE ki, PID_TYPE kd);
+#define APID_D_COMPLETE(pid) APID_SET_D_Function(pid, PID_DIFFERENTIAL_COMPLETE)               // å®Œå…¨å¾®åˆ†
+#define APID_D_PART(pid, value) APID_SET_D_Function(pid, PID_DIFFERENTIAL_PART, value)         // ä¸å®Œå…¨å¾®åˆ†
+#define APID_D_PREVIOUS(pid, value) APID_SET_D_Function(pid, PID_DIFFERENTIAL_PREVIOUS, value) // å¾®åˆ†å…ˆè¡Œ
 
-    void PID_SET_I_Function(PID_T* pid, PID_I_Function imode, ...);
-    void PID_SET_D_Function(PID_T* pid, PID_D_Function dmode, ...);
+    void APID_Hander(apid_t *pid, PID_TYPE cycle);
 
-	void  PID_Hander(PID_T* pid, PID_TYPE cycle);
+    void APID_Set_Target_Limit(apid_t *pid, PID_TYPE value);
+    void APID_Set_Bias_Limit(apid_t *pid, PID_TYPE value);
+    void APID_Set_Bias_Dead_Zone(apid_t *pid, PID_TYPE value);
+    void APID_Set_Integral_Limit(apid_t *pid, PID_TYPE value);
+    void APID_Set_Out_Limit(apid_t *pid, PID_TYPE value);
 
-//    void inline PID_Sst_Target_Limit(PID_T* pid, PID_TYPE value);
-//    void inline PID_Sst_Bias_Limit(PID_T* pid, PID_TYPE value);
-//    void inline PID_Sst_Bias_Dead_Zone(PID_T* pid, PID_TYPE value);
-//    void inline PID_Sst_Integral_Limit(PID_T* pid, PID_TYPE value);
-//    void inline PID_Sst_Out_Limit(PID_T* pid, PID_TYPE value);
-//	
-//    void inline PID_Sst_Feedforward(PID_T* pid, PID_TYPE value);
-//    void inline PID_Sst_KPre(PID_T* pid, PID_TYPE value);
-//	
-//    void inline PID_Sst_Target(PID_T* pid, PID_TYPE value);
-//    void inline PID_Sst_Present(PID_T* pid, PID_TYPE value);
-//    void inline PID_Sst_Predict(PID_T* pid, PID_TYPE value);
+    void APID_Set_Feedforward(apid_t *pid, PID_TYPE value);
+    void APID_Set_KPre(apid_t *pid, PID_TYPE value);
 
+    void APID_Set_Target(apid_t *pid, PID_TYPE value);
+    void APID_Set_Present(apid_t *pid, PID_TYPE value);
+    void APID_Set_Predict(apid_t *pid, PID_TYPE value);
 
+    PID_TYPE APID_Get_Out(apid_t *pid);
 
-
-/**
- * @description: ÏÞÖÆÄ¿±êÖµ/ÆÚÍûÖµ×î´óÖµ
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Target_Limit(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.target_limit = value;
-}
-/**
- * @description: ÏÞÖÆÎó²î×î´óÖµ
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Bias_Limit(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.bias_limit = value;
-}
-/**
- * @description: ÉèÖÃÎó²îÏìÓ¦ËÀÇø
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Bias_Dead_Zone(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.bias_dead_zone = value;
-}
-
-/**
- * @description: ÏÞÖÆ»ý·ÖÏî×î´óÖµ
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void PID_Sst_Integral_Limit(PID_T* pid, PID_TYPE value);
-/**
- * @description: ÏÞÖÆpidÊä³ö×î´óÖµ
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Out_Limit(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.out_limit = value;
-}
-/**
- * @description: ÉèÖÃÇ°À¡ÏµÊý
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Feedforward(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.kf = value;
-}
-/**
- * @description: ÉèÖÃÔ¤²âÏµÊý
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_KPre(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.k_pre = value;
-}
-/**
- * @description: ÏÞÖÆÄ¿±êÖµ/ÆÚÍûÖµ
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Target(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.target = value;
-}
-/**
- * @description: ÉèÖÃµ±Ç°Öµ/·´À¡Öµ
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Present(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.present = value;
-}
-/**
- * @description: ÉèÖÃÔ¤²âÏµÊý
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_TYPE} value
- * @return {*}
- */
-void inline PID_Sst_Predict(PID_T* pid, PID_TYPE value)
-{
-    pid->parameter.predict = value;
-}
-
-
-
-#define PID_I_NORMAL(pid)               PID_SET_I_Function(pid,PID_INTEGRAL_NORMAL)//ÆÕÍ¨»ý·Ö
-#define PID_I_SEPARATION(pid,value)	    PID_SET_I_Function(pid,PID_INTEGRAL_SEPARATION,value)//»ý·Ö·ÖÀë
-#define PID_I_SATURATION(pid,value)	    PID_SET_I_Function(pid,PID_INTEGRAL_SATURATION,value)//¿¹±¥ºÍ»ý·Ö
-#define PID_I_SPEED(pid,func)		    PID_SET_I_Function(pid,PID_INTEGRAL_SPEED,func)//±äËÙ»ý·Ö
-#define PID_I_TRAPEZIOD(pid)	        PID_SET_I_Function(pid,PID_INTEGRAL_TRAPEZIOD)//ÌÝÐÎ»ý·Ö
-
-#define PID_D_COMPLETE(pid)             PID_SET_D_Function(pid,PID_DIFFERENTIAL_COMPLETE)//ÍêÈ«Î¢·Ö
-#define PID_D_PART(pid,value)           PID_SET_D_Function(pid,PID_DIFFERENTIAL_PART,value)//²»ÍêÈ«Î¢·Ö
-#define PID_D_PREVIOUS(pid,value)       PID_SET_D_Function(pid,PID_DIFFERENTIAL_PREVIOUS,value)//Î¢·ÖÏÈÐÐ
 
 #ifdef __cplusplus
 }
 #endif
 #endif
-
-

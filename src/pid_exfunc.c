@@ -4,127 +4,145 @@
  * @LastEditors: dyyt 805207319@qq.com
  * @LastEditTime: 2023-07-23 01:44:00
  * @FilePath: \undefinedc:\Users\LENOVO\Documents\programs\PID\VS_Project\ConsoleApplication1\ConsoleApplication1\pid_exfunc.c
- * @Description: pid¿â
+ * @Description: pidåº“
  */
 #include "pid.h"
 #include <stdarg.h>
 
+extern void i_handle_Increment_Normal(apid_t *pid);
+extern void i_handle_Increment_Separation(apid_t *pid);
+extern void i_handle_Increment_Saturation(apid_t *pid);
+extern void i_handle_Increment_Speed(apid_t *pid);
+extern void i_handle_Increment_Trapeziod(apid_t *pid);
 
-extern 	void i_handle_Increment_Normal(PID_T* pid);
-extern 	void i_handle_Increment_Separation(PID_T* pid);
-extern 	void i_handle_Increment_Saturation(PID_T* pid);
-extern 	void i_handle_Increment_Speed(PID_T* pid);
-extern 	void i_handle_Increment_Trapeziod(PID_T* pid);
+extern void d_handle_Increment_Complete(apid_t *pid);
+extern void d_handle_Increment_Part(apid_t *pid);
+extern void d_handle_Increment_Previous(apid_t *pid);
 
-extern 	void d_handle_Increment_Complete(PID_T* pid);
-extern 	void d_handle_Increment_Part(PID_T* pid);
-extern 	void d_handle_Increment_Previous(PID_T* pid);
+extern void d_handle_Position_Complete(apid_t *pid);
+extern void d_handle_Position_Part(apid_t *pid);
+extern void d_handle_Position_Previous(apid_t *pid);
 
-extern 	void d_handle_Position_Complete(PID_T* pid);
-extern 	void d_handle_Position_Part(PID_T* pid);
-extern 	void d_handle_Position_Previous(PID_T* pid);
-
-extern 	void i_handle_Position_Normal(PID_T* pid);
-extern 	void i_handle_Position_Separation(PID_T* pid);
-extern 	void i_handle_Position_Saturation(PID_T* pid);
-extern 	void i_handle_Position_Speed(PID_T* pid);
-extern 	void i_handle_Position_Trapeziod(PID_T* pid);
+extern void i_handle_Position_Normal(apid_t *pid);
+extern void i_handle_Position_Separation(apid_t *pid);
+extern void i_handle_Position_Saturation(apid_t *pid);
+extern void i_handle_Position_Speed(apid_t *pid);
+extern void i_handle_Position_Trapeziod(apid_t *pid);
 
 /*
-TODO:   ÊµÏÖ±äËÙ»ý·ÖµÄÓÃ»§×Ô¶¨Òå
-        ÊµÏÖÇ°À¡·½³ÌµÄ×Ô¶¨Òå,Í¬Ê±±£Áôkf²ÎÊý
-        ÊµÏÖÊä³öÂË²¨¼¯³É¹¦ÄÜ£¬°üÀ¨»¬Ä¤ÂË²¨/ÓÃ»§×Ô¶¨ÒåÂË²¨
-        ÍêÉÆºêÅäÖÃÏî£¬ÓÉÓÃ»§¾ö¶¨Ö§³ÖÄÄÐ©Ä£Ê½ÒÔ¼õÐ¡±àÒëÌå»ý
-        ¼¯³Éµ÷ÊÔ¹¦ÄÜ£¬Óëvofa¶Ô½Ó£¬´òÍ¼Ïñ(Ö§³ÖÈÎÒâ²ÎÊý)£¬Ìí¼ÓnameÊôÐÔ
-        ¼¯³ÉÃüÁî¹¦ÄÜ
-        ¼¯³É×Ô¶¯µ÷²Î
-        ÍêÉÆasssert¹¦ÄÜ
+TODO:   å®žçŽ°å˜é€Ÿç§¯åˆ†çš„ç”¨æˆ·è‡ªå®šä¹‰
+        å®žçŽ°å‰é¦ˆæ–¹ç¨‹çš„è‡ªå®šä¹‰,åŒæ—¶ä¿ç•™kfå‚æ•°
+        å®žçŽ°è¾“å‡ºæ»¤æ³¢é›†æˆåŠŸèƒ½ï¼ŒåŒ…æ‹¬æ»‘è†œæ»¤æ³¢/ç”¨æˆ·è‡ªå®šä¹‰æ»¤æ³¢
+        å®Œå–„å®é…ç½®é¡¹ï¼Œç”±ç”¨æˆ·å†³å®šæ”¯æŒå“ªäº›æ¨¡å¼ä»¥å‡å°ç¼–è¯‘ä½“ç§¯
+        é›†æˆè°ƒè¯•åŠŸèƒ½ï¼Œä¸Žvofaå¯¹æŽ¥ï¼Œæ‰“å›¾åƒ(æ”¯æŒä»»æ„å‚æ•°)ï¼Œæ·»åŠ nameå±žæ€§
+        é›†æˆå‘½ä»¤åŠŸèƒ½
+        é›†æˆè‡ªåŠ¨è°ƒå‚
+        å®Œå–„asssertåŠŸèƒ½
 
 */
 
-
-
-
-
-
 /**
- * @description: ÏÞÖÆ»ý·ÖÏî×î´óÖµ
- * @param {PID_T*} pid ÊµÀý¾ä±ú
+ * @description: é™åˆ¶ç§¯åˆ†é¡¹æœ€å¤§å€¼
+ * @param {apid_t*} pid å®žä¾‹å¥æŸ„
  * @param {PID_TYPE} value
  * @return {*}
  */
-void PID_Sst_Integral_Limit(PID_T* pid, PID_TYPE value)
+void PID_Sst_Integral_Limit(apid_t *pid, PID_TYPE value)
 {
-	if(pid->flag.integral_way != PID_INTEGRAL_SATURATION)
-	{
-		PID_SET_I_Function(pid,PID_INTEGRAL_SATURATION,value);//¿¹±¥ºÍ»ý·Ö
-	}else{
-    pid->parameter.integral_limit = value;
-	}
+    if (pid->flag.integral_way != PID_INTEGRAL_SATURATION)
+    {
+        APID_SET_I_Function(pid, PID_INTEGRAL_SATURATION, value); // æŠ—é¥±å’Œç§¯åˆ†
+    }
+    else
+    {
+        pid->parameter.integral_limit = value;
+    }
 }
 /**
- * @description: ÉèÖÃpidµÄ»ý·ÖÄ£Ê½(Ä¬ÈÏÎªÆÕÍ¨Ä£Ê½)
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_I_Function} imode Ö§³ÖµÄ»ý·ÖÄ£Ê½
+ * @description: è®¾ç½®pidçš„ç§¯åˆ†æ¨¡å¼(é»˜è®¤ä¸ºæ™®é€šæ¨¡å¼)
+ * @param {apid_t*} pid å®žä¾‹å¥æŸ„
+ * @param {ALL_PID_I_Function} imode æ”¯æŒçš„ç§¯åˆ†æ¨¡å¼
  * @return {*}
- * @note ¸ù¾Ý¾ß²»Í¬µÄ¹¦ÄÜ£¬¿ÉÄÜÒª´«ÈëÒ»¸öÊý»òº¯ÊýÖ¸Õë×öÌØ±ðµÄ³õÊ¼»¯ 
- *       PID_INTEGRAL_SEPARATION:pid->parameter.bias_for_integral //Êý
- *       PID_INTEGRAL_SATURATION:pid->parameter.integral_limit //Êý
- *       PID_INTEGRAL_SPEED:pid->variable //º¯Êý
+ * @note æ ¹æ®å…·ä¸åŒçš„åŠŸèƒ½ï¼Œå¯èƒ½è¦ä¼ å…¥ä¸€ä¸ªæ•°æˆ–å‡½æ•°æŒ‡é’ˆåšç‰¹åˆ«çš„åˆå§‹åŒ–
+ *       PID_INTEGRAL_SEPARATION:pid->parameter.bias_for_integral //æ•°
+ *       PID_INTEGRAL_SATURATION:pid->parameter.integral_limit //æ•°
+ *       PID_INTEGRAL_SPEED:pid->variable //å‡½æ•°
  */
-void PID_SET_I_Function(PID_T* pid, PID_I_Function imode, ...)
+void APID_SET_I_Function(apid_t *pid, ALL_PID_I_Function imode, ...)
 {
-    va_list ap;//ÉùÃ÷Ò»¸öva_list±äÁ¿
+    va_list ap; // å£°æ˜Žä¸€ä¸ªva_listå˜é‡
     pid->flag.integral_way = imode;
     switch (imode)
     {
     case PID_INTEGRAL_NORMAL:
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->i_handle = i_handle_Increment_Normal;
         }
-        else {
+        else
+        {
             pid->i_handle = i_handle_Position_Normal;
         }
         break;
     case PID_INTEGRAL_SEPARATION:
-        va_start(ap, imode);   //³õÊ¼»¯£¬µÚ¶þ¸ö²ÎÊýÎª×îºóÒ»¸öÈ·¶¨µÄÐÎ²Î
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+        va_start(ap, imode); // åˆå§‹åŒ–ï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸ºæœ€åŽä¸€ä¸ªç¡®å®šçš„å½¢å‚
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->i_handle = i_handle_Increment_Separation;
         }
-        else {
+        else
+        {
             pid->i_handle = i_handle_Position_Separation;
         }
+#if (PID_TYPE == float)
+        pid->parameter.bias_for_integral = va_arg(ap, double);
+#elif (PID_TYPE == double)
         pid->parameter.bias_for_integral = va_arg(ap, PID_TYPE);
+#else
+        pid->parameter.bias_for_integral = (PID_TYPE)va_arg(ap, int);
+#endif
         va_end(ap);
         break;
     case PID_INTEGRAL_SATURATION:
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->i_handle = i_handle_Increment_Saturation;
         }
-        else {
+        else
+        {
             pid->i_handle = i_handle_Position_Saturation;
         }
-        va_start(ap, imode);   //³õÊ¼»¯£¬µÚ¶þ¸ö²ÎÊýÎª×îºóÒ»¸öÈ·¶¨µÄÐÎ²Î
+        va_start(ap, imode); // åˆå§‹åŒ–ï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸ºæœ€åŽä¸€ä¸ªç¡®å®šçš„å½¢å‚
+#if (PID_TYPE == float)
+        pid->parameter.integral_limit = va_arg(ap, double);
+#elif (PID_TYPE == double)
         pid->parameter.integral_limit = va_arg(ap, PID_TYPE);
+#else
+        pid->parameter.integral_limit = (PID_TYPE)va_arg(ap, int);
+#endif
         va_end(ap);
         break;
     case PID_INTEGRAL_SPEED:
 
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->i_handle = i_handle_Increment_Speed;
         }
-        else {
+        else
+        {
             pid->i_handle = i_handle_Position_Speed;
         }
-        va_start(ap, imode);   //³õÊ¼»¯£¬µÚ¶þ¸ö²ÎÊýÎª×îºóÒ»¸öÈ·¶¨µÄÐÎ²Î
-        pid->variable = va_arg(ap, void*);
+        va_start(ap, imode); // åˆå§‹åŒ–ï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸ºæœ€åŽä¸€ä¸ªç¡®å®šçš„å½¢å‚
+        pid->variable = va_arg(ap, void *);
         va_end(ap);
         break;
     case PID_INTEGRAL_TRAPEZIOD:
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->i_handle = i_handle_Increment_Trapeziod;
         }
-        else {
+        else
+        {
             pid->i_handle = i_handle_Position_Trapeziod;
         }
 
@@ -135,49 +153,67 @@ void PID_SET_I_Function(PID_T* pid, PID_I_Function imode, ...)
 }
 
 /**
- * @description: ÉèÖÃpidµÄÎ¢·ÖÄ£Ê½(Ä¬ÈÏÎªÆÕÍ¨Ä£Ê½)
- * @param {PID_T*} pid ÊµÀý¾ä±ú
- * @param {PID_D_Function} dmode
+ * @description: è®¾ç½®pidçš„å¾®åˆ†æ¨¡å¼(é»˜è®¤ä¸ºæ™®é€šæ¨¡å¼)
+ * @param {apid_t*} pid å®žä¾‹å¥æŸ„
+ * @param {ALL_PID_D_Function} dmode
  * @return {*}
- * @note ¸ü¾ß²»Í¬µÄ¹¦ÄÜ£¬¿ÉÄÜÒª´«ÈëÒ»¸ö²ÎÊý×öÌØ±ðµÄ³õÊ¼»¯float »òº¯ÊýÖ¸Õë
- *          PID_DIFFERENTIAL_COMPLETE:	//ÍêÈ«Î¢·Ö
+ * @note æ›´å…·ä¸åŒçš„åŠŸèƒ½ï¼Œå¯èƒ½è¦ä¼ å…¥ä¸€ä¸ªå‚æ•°åšç‰¹åˆ«çš„åˆå§‹åŒ–float æˆ–å‡½æ•°æŒ‡é’ˆ
+ *          PID_DIFFERENTIAL_COMPLETE:	//å®Œå…¨å¾®åˆ†
  *          PID_DIFFERENTIAL_PART:pid->parameter.kd_lpf
  *          PID_DIFFERENTIAL_PREVIOUS:pid->parameter.kd_pre
  */
-void PID_SET_D_Function(PID_T* pid, PID_D_Function dmode, ...)
+void APID_SET_D_Function(apid_t *pid, ALL_PID_D_Function dmode, ...)
 {
-    va_list ap;//ÉùÃ÷Ò»¸öva_list±äÁ¿
+    va_list ap; // å£°æ˜Žä¸€ä¸ªva_listå˜é‡
     pid->flag.differential_way = dmode;
     switch (dmode)
     {
-    case PID_DIFFERENTIAL_COMPLETE:	//ÍêÈ«Î¢·Ö
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+    case PID_DIFFERENTIAL_COMPLETE: // å®Œå…¨å¾®åˆ†
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->d_handle = d_handle_Increment_Complete;
         }
-        else {
+        else
+        {
             pid->d_handle = d_handle_Position_Complete;
         }
         break;
-    case PID_DIFFERENTIAL_PART:					//²»ÍêÈ«Î¢·Ö
-        va_start(ap, dmode);   //³õÊ¼»¯£¬µÚ¶þ¸ö²ÎÊýÎª×îºóÒ»¸öÈ·¶¨µÄÐÎ²Î
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+    case PID_DIFFERENTIAL_PART: // ä¸å®Œå…¨å¾®åˆ†
+        va_start(ap, dmode);    // åˆå§‹åŒ–ï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸ºæœ€åŽä¸€ä¸ªç¡®å®šçš„å½¢å‚
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->d_handle = d_handle_Increment_Part;
         }
-        else {
+        else
+        {
             pid->d_handle = d_handle_Position_Part;
         }
+#if (PID_TYPE == float)
+        pid->parameter.kd_.kd_lpf = va_arg(ap, double);
+#elif (PID_TYPE == double)
         pid->parameter.kd_.kd_lpf = va_arg(ap, PID_TYPE);
+#else
+        pid->parameter.kd_.kd_lpf = (PID_TYPE)va_arg(ap, int);
+#endif
         va_end(ap);
         break;
-    case PID_DIFFERENTIAL_PREVIOUS:			//Î¢·ÖÏÈÐÐ
-        va_start(ap, dmode);   //³õÊ¼»¯£¬µÚ¶þ¸ö²ÎÊýÎª×îºóÒ»¸öÈ·¶¨µÄÐÎ²Î
-        if (pid->flag.pid_mode == PID_INCREMENT_NULL) {
+    case PID_DIFFERENTIAL_PREVIOUS: // å¾®åˆ†å…ˆè¡Œ
+        va_start(ap, dmode);        // åˆå§‹åŒ–ï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸ºæœ€åŽä¸€ä¸ªç¡®å®šçš„å½¢å‚
+        if (pid->flag.pid_mode == PID_INCREMENT)
+        {
             pid->d_handle = d_handle_Increment_Previous;
         }
-        else {
+        else
+        {
             pid->d_handle = d_handle_Position_Previous;
         }
+#if (PID_TYPE == float)
+        pid->parameter.kd_.kd_pre = va_arg(ap, double);
+#elif (PID_TYPE == double)
         pid->parameter.kd_.kd_pre = va_arg(ap, PID_TYPE);
+#else
+        pid->parameter.kd_.kd_pre = (PID_TYPE)va_arg(ap, int);
+#endif
         va_end(ap);
         break;
     default:

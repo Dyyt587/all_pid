@@ -4,7 +4,7 @@
  * @LastEditors: dyyt 805207319@qq.com
  * @LastEditTime: 2023-07-23 01:19:13
  * @FilePath: \undefinedc:\Users\LENOVO\Documents\programs\PID\VS_Project\ConsoleApplication1\ConsoleApplication1\pid.c
- * @Description:pid¿â
+ * @Description:pidåº“
  */
 
 #include"pid.h"
@@ -14,13 +14,13 @@
 extern "C"
 {
 #endif
-	void PID_Reset(PID_T* pid);
+	void PID_Reset(apid_t* pid);
 
 	/////////////////////////////////////////////////////////
 #if EXAMPLE
-//ÒÔÏÂÎªpid³õÊ¼»¯ÊµÀıºÍ½âÎö
-	PID_T pid = { 0 };
-	PID_T next_pid = { 0 };
+//ä»¥ä¸‹ä¸ºpidåˆå§‹åŒ–å®ä¾‹å’Œè§£æ
+	apid_t pid = { 0 };
+	apid_t next_pid = { 0 };
 	void example(void)
 	{
 
@@ -29,7 +29,7 @@ extern "C"
 
 #endif
 
-    void  inline PID_Hander(PID_T* pid, PID_TYPE cycle)
+    void  inline APID_Hander(apid_t* pid, PID_TYPE cycle)
     {
         pid->handle(pid, cycle);
     }
@@ -39,66 +39,66 @@ extern "C"
     }
 
  /**
-  * @description: ÔİÍ£pid¼ÆËã,Êä³ö½«µÈÓÚÊäÈë
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: æš‚åœpidè®¡ç®—,è¾“å‡ºå°†ç­‰äºè¾“å…¥
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void PID_Pause(PID_T* pid)
+	void APID_Pause(apid_t* pid)
 	{
 		pid->flag.run_status = PAUSE;
 	}
  /**
-  * @description: Í£Ö¹pid,Êä³ö½«ºãµÈÓÚ0
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: åœæ­¢pid,è¾“å‡ºå°†æ’ç­‰äº0
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void PID_STOP(PID_T* pid)
+	void APID_STOP(apid_t* pid)
 	{
 		pid->flag.run_status = STOP;
 	}
  /**
-  * @description: ¿ªÆôpid/pidÕı³£ÔËĞĞ
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å¼€å¯pid/pidæ­£å¸¸è¿è¡Œ
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void PID_Enable(PID_T* pid)
+	void APID_Enable(apid_t* pid)
 	{
 		pid->flag.run_status = PID_ENABLE;
 	}
 
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½ÆÕÍ¨»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼æ™®é€šç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Increment_Normal(PID_T* pid)
+	void i_handle_Increment_Normal(apid_t* pid)
 	{
-		//ÆÕÍ¨»ı·Ö
+		//æ™®é€šç§¯åˆ†
 		pid->process.integral_bias = pid->process.bias * pid->cycle;
 		pid->process.integral_bias = pid->process.bias * pid->cycle;
 
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½»ı·Ö·ÖÀë 
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼ç§¯åˆ†åˆ†ç¦» 
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Increment_Separation(PID_T* pid)
+	void i_handle_Increment_Separation(apid_t* pid)
 	{
-		//»ı·Ö·ÖÀë
+		//ç§¯åˆ†åˆ†ç¦»
 		if (pid->process.bias > pid->parameter.bias_for_integral ||
 			pid->process.bias < -pid->parameter.bias_for_integral)
 			return;
 		pid->process.integral_bias = pid->process.bias * pid->cycle;
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½¿¹±¥ºÍ»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼æŠ—é¥±å’Œç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Increment_Saturation(PID_T* pid)
+	void i_handle_Increment_Saturation(apid_t* pid)
 	{
-		//¿¹»ı·Ö±¥ºÍ
+		//æŠ—ç§¯åˆ†é¥±å’Œ
 		if (pid->process.integral_bias * pid->parameter.ki > pid->parameter.integral_limit)
 			pid->process.integral_bias = pid->parameter.integral_limit / pid->parameter.ki;
 
@@ -110,89 +110,89 @@ extern "C"
 		return;
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½±äËÙ»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼å˜é€Ÿç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Increment_Speed(PID_T* pid)
+	void i_handle_Increment_Speed(apid_t* pid)
 	{
-		//±äËÙ»ı·Ö -- ¿É×ÔĞĞÌí¼Óº¯Êı»ò´¦ÀíËã·¨
+		//å˜é€Ÿç§¯åˆ† -- å¯è‡ªè¡Œæ·»åŠ å‡½æ•°æˆ–å¤„ç†ç®—æ³•
 		pid->process.integral_bias = (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
 		pid->process.integral_bias -= (pid->process.bias - pid->process.last_bias) * pid->cycle;
 
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½ÌİĞÎ»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼æ¢¯å½¢ç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Increment_Trapeziod(PID_T* pid)
+	void i_handle_Increment_Trapeziod(apid_t* pid)
 	{
-		//ÌİĞÎ»ı·Ö -- ¿É×ÔĞĞÌí¼Óº¯Êı»ò´¦ÀíËã·¨
+		//æ¢¯å½¢ç§¯åˆ† -- å¯è‡ªè¡Œæ·»åŠ å‡½æ•°æˆ–å¤„ç†ç®—æ³•
 		pid->process.integral_bias = (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
 	}
 
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½È«Î¢·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼å…¨å¾®åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void d_handle_Increment_Complete(PID_T* pid)
+	void d_handle_Increment_Complete(apid_t* pid)
 	{
 		pid->process.lpf_differential_bias
 			= pid->process.differential_bias
 			= pid->process.bias - 2 * pid->process.last_bias + pid->process.lastlast_bias;
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½²»ÍêÈ«Î¢·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼ä¸å®Œå…¨å¾®åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @param {parameter.kd_lpf} *
   * @return {*}
   */
-	void d_handle_Increment_Part(PID_T* pid)
+	void d_handle_Increment_Part(apid_t* pid)
 	{
-		//ÇóÎ¢·Ö£¬ÔÙµÍÍ¨ÂË²¨
-		pid->process.differential_bias = pid->process.bias - 2 * pid->process.last_bias + pid->process.lastlast_bias;//±¾ĞĞ½øĞĞdµÄ¼ÆËã
+		//æ±‚å¾®åˆ†ï¼Œå†ä½é€šæ»¤æ³¢
+		pid->process.differential_bias = pid->process.bias - 2 * pid->process.last_bias + pid->process.lastlast_bias;//æœ¬è¡Œè¿›è¡Œdçš„è®¡ç®—
 		pid->process.differential_bias = FOLowPassFilter(pid->process.differential_bias, pid->process.lpf_differential_bias, pid->parameter.kd_.kd_lpf);
 		pid->process.lpf_differential_bias = pid->process.differential_bias;
 		//pid->process.lpf_differential_bias = pid->parameter.kd_lpf * 
-		//	(3.1415926f * cycle * (pid->process.differential_bias - pid->process.lpf_differential_bias));//±¾ĞĞ½øĞĞµÍÍ¨ÂË²¨ ÊäÈëÊä³öÎªd
-		//	//(3.1415926f * cycle * (pid->process.bias - 2*pid->process.last_bias + pid->process.lastlast_bias));//±¾ĞĞ½øĞĞµÍÍ¨ÂË²¨ ÊäÈëÊä³öÎªd
+		//	(3.1415926f * cycle * (pid->process.differential_bias - pid->process.lpf_differential_bias));//æœ¬è¡Œè¿›è¡Œä½é€šæ»¤æ³¢ è¾“å…¥è¾“å‡ºä¸ºd
+		//	//(3.1415926f * cycle * (pid->process.bias - 2*pid->process.last_bias + pid->process.lastlast_bias));//æœ¬è¡Œè¿›è¡Œä½é€šæ»¤æ³¢ è¾“å…¥è¾“å‡ºä¸ºd
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,ÔöÁ¿Ê½Î¢·ÖÏÈĞĞ
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,å¢é‡å¼å¾®åˆ†å…ˆè¡Œ
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void d_handle_Increment_Previous(PID_T* pid)
+	void d_handle_Increment_Previous(apid_t* pid)
 	{
-		//Î¢·ÖÏÈĞĞ
+		//å¾®åˆ†å…ˆè¡Œ
 		pid->process.lpf_differential_bias
 			= pid->process.differential_bias
 			= (pid->process.bias - 2 * pid->process.last_bias + pid->process.lastlast_bias) - pid->parameter.kd_.kd_pre * (pid->parameter.target - pid->process.last_target);
 	}
 
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,Î»ÖÃÊ½È«Î¢·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,ä½ç½®å¼å…¨å¾®åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void d_handle_Position_Complete(PID_T* pid)
+	void d_handle_Position_Complete(apid_t* pid)
 	{
-		//Ö±½ÓÇóÎ¢·Ö
+		//ç›´æ¥æ±‚å¾®åˆ†
 		pid->process.lpf_differential_bias
 			= pid->process.differential_bias
 			= pid->process.bias - pid->process.last_bias;
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,Î»ÖÃÊ½²»ÍêÈ«Î¢·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,ä½ç½®å¼ä¸å®Œå…¨å¾®åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @param {parameter.kd_lpf * 3.1415926f * cycle		} *
   * @return {*}
   */
-	void d_handle_Position_Part(PID_T* pid)
+	void d_handle_Position_Part(apid_t* pid)
 	{
-		//ÇóÎ¢·Ö£¬ÔÙµÍÍ¨ÂË²¨
+		//æ±‚å¾®åˆ†ï¼Œå†ä½é€šæ»¤æ³¢
 		pid->process.differential_bias = pid->process.bias - pid->process.last_bias;
 		pid->process.differential_bias = FOLowPassFilter(pid->process.differential_bias, pid->process.lpf_differential_bias, pid->parameter.kd_.kd_lpf);
 		pid->process.lpf_differential_bias = pid->process.differential_bias;
@@ -200,38 +200,38 @@ extern "C"
 			* (pid->process.differential_bias - pid->process.lpf_differential_bias);*/
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,Î»ÖÃÊ½Î¢·ÖÏÈĞĞ
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,ä½ç½®å¼å¾®åˆ†å…ˆè¡Œ
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void d_handle_Position_Previous(PID_T* pid)
+	void d_handle_Position_Previous(apid_t* pid)
 	{
-		//Î¢·ÖÏÈĞĞ
+		//å¾®åˆ†å…ˆè¡Œ
 		pid->process.lpf_differential_bias
 			= pid->process.differential_bias
 			= (pid->process.bias - pid->process.last_bias) - pid->parameter.kd_.kd_pre * (pid->parameter.target - pid->process.last_target);
 	}
 
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,Î»ÖÃÊ½ÆÕÍ¨»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,ä½ç½®å¼æ™®é€šç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Position_Normal(PID_T* pid)
+	void i_handle_Position_Normal(apid_t* pid)
 	{
-		//ÆÕÍ¨»ı·Ö
+		//æ™®é€šç§¯åˆ†
 		pid->process.integral_bias += pid->process.bias * pid->cycle;
 		pid->process.integral_bias += pid->process.bias * pid->cycle;
 
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ,Î»ÖÃÊ½»ı·Ö·ÖÀë
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨,ä½ç½®å¼ç§¯åˆ†åˆ†ç¦»
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Position_Separation(PID_T* pid)
+	void i_handle_Position_Separation(apid_t* pid)
 	{
-		//»ı·Ö·ÖÀë
+		//ç§¯åˆ†åˆ†ç¦»
 		if (pid->process.bias > pid->parameter.bias_for_integral || pid->process.bias < -pid->parameter.bias_for_integral)
 			return;
 
@@ -239,13 +239,13 @@ extern "C"
 
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ£¬Î»ÖÃÊ½¿¹±¥ºÍ»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨ï¼Œä½ç½®å¼æŠ—é¥±å’Œç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Position_Saturation(PID_T* pid)
+	void i_handle_Position_Saturation(apid_t* pid)
 	{
-		//¿¹»ı·Ö±¥ºÍ
+		//æŠ—ç§¯åˆ†é¥±å’Œ
 		if (pid->process.integral_bias * pid->parameter.ki > pid->parameter.integral_limit)
 			pid->process.integral_bias = pid->parameter.integral_limit / pid->parameter.ki;
 
@@ -256,47 +256,47 @@ extern "C"
 			pid->process.integral_bias += pid->process.bias * pid->cycle;
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ£¬Î»ÖÃÊ½±äËÙ»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨ï¼Œä½ç½®å¼å˜é€Ÿç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Position_Speed(PID_T* pid)
+	void i_handle_Position_Speed(apid_t* pid)
 	{
-		//±äËÙ»ı·Ö -- ¿É×ÔĞĞÌí¼Óº¯Êı»ò´¦ÀíËã·¨
+		//å˜é€Ÿç§¯åˆ† -- å¯è‡ªè¡Œæ·»åŠ å‡½æ•°æˆ–å¤„ç†ç®—æ³•
 		pid->process.integral_bias += (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
 		pid->process.integral_bias -= (pid->process.bias - pid->process.last_bias) * pid->cycle;
 	}
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ£¬Î»ÖÃÊ½ÌİĞÎ»ı·Ö
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨ï¼Œä½ç½®å¼æ¢¯å½¢ç§¯åˆ†
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void i_handle_Position_Trapeziod(PID_T* pid)
+	void i_handle_Position_Trapeziod(apid_t* pid)
 	{
 		pid->process.integral_bias += (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
 	}
 
 
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å†…éƒ¨ä½¿ç”¨
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void inline __PID_Out(PID_T* pid)
+	void __PID_Out(apid_t* pid)
 	{
-		////////////////////////////////Êä³öºÏ³É
+		////////////////////////////////è¾“å‡ºåˆæˆ
 #if USE_HOOK_FIRST
 		pid->parameter.user_hook_first(pid);
 #endif
-		//¼ÆËãÊä³ö
+		//è®¡ç®—è¾“å‡º
 		pid->parameter.out = pid->parameter.kp * pid->process.bias +
 			pid->parameter.ki * pid->process.integral_bias +
-			pid->parameter.kd * pid->process.lpf_differential_bias / pid->cycle + 	//¿ÉÒÔ½«cycle×¢ÊÍ
+			pid->parameter.kd * pid->process.lpf_differential_bias / pid->cycle + 	//å¯ä»¥å°†cycleæ³¨é‡Š
 			pid->process.feedforward;
 #if USE_HOOK_OUT
 		pid->parameter.user_hook_end(pid);
 #endif
-		//Êä³öÏŞ·ù
+		//è¾“å‡ºé™å¹…
 		if (pid->parameter.out_limit >= 0)
 		{
 			if (pid->parameter.out > pid->parameter.out_limit)
@@ -305,14 +305,14 @@ extern "C"
 			else if (pid->parameter.out < -pid->parameter.out_limit)
 				pid->parameter.out = -pid->parameter.out_limit;
 		}
-		//´æ´¢¹ıÈ¥Öµ
+		//å­˜å‚¨è¿‡å»å€¼
 		pid->process.last_target = (pid->parameter.target);
-		pid->process.lastlast_bias = pid->process.last_bias;//½öÔöÁ¿Ê½Ê¹ÓÃ
+		pid->process.lastlast_bias = pid->process.last_bias;//ä»…å¢é‡å¼ä½¿ç”¨
 		pid->process.last_bias = pid->process.bias;
 	}
 
-//ÄÚ²¿Ê¹ÓÃ,¼ì²éÊÇ·ñÒª½øĞĞpid¼ÆËã
-#define __OPERATE_STATUS \
+//å†…éƒ¨ä½¿ç”¨,æ£€æŸ¥æ˜¯å¦è¦è¿›è¡Œpidè®¡ç®—
+#define __OPERATE_STATUS() \
 	if (pid->flag.run_status != PID_ENABLE)\
 	{\
 		if (pid->flag.run_status == STOP)\
@@ -334,89 +334,77 @@ extern "C"
 		pid->parameter.predict = 0;\
 		return;\
 	}
+
  /**
-  * @description: ÄÚ²¿Ê¹ÓÃ
-  * @param {PID_T*} pid ÊµÀı¾ä±ú1
+  * @description: pidè®¡ç®—å‡½æ•°
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+  * @param {PID_TYPE} cycle pidè®¡ç®—å‘¨æœŸ,å•ä½ms
   * @return {*}
   */
-	void inline __Is_Target_Limit(PID_T* pid)
+	void _PID_Hander(apid_t* pid, PID_TYPE cycle)
 	{
-		////////////////////////////////ÆÚÍûÖµÏŞ·ù
+		pid->cycle = cycle;
+		__OPERATE_STATUS();//æ£€æŸ¥è¿è¡ŒçŠ¶æ€
+		////////////////////////////////æœŸæœ›å€¼é™å¹…
 		if ((pid->parameter.target) > pid->parameter.target_limit)
 			(pid->parameter.target) = pid->parameter.target_limit;
 		else if ((pid->parameter.target) < -pid->parameter.target_limit)
 			(pid->parameter.target) = -pid->parameter.target_limit;
-	}
-
- /**
-  * @description: pid¼ÆËãº¯Êı
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
-  * @param {PID_TYPE} cycle pid¼ÆËãÖÜÆÚ,µ¥Î»ms
-  * @return {*}
-  */
-	void _PID_Hander(PID_T* pid, PID_TYPE cycle)
-	{
-		pid->cycle = cycle;
-		__OPERATE_STATUS;//¼ì²éÔËĞĞ×´Ì¬
-		////////////////////////////////ÆÚÍûÖµÏŞ·ù
-		__Is_Target_Limit(pid);
-		////////////////////////////////Ç°À¡²Ù×÷--Ç°À¡ÖµÖ±½Ó¼ÓÈëÊä³ö
+		////////////////////////////////å‰é¦ˆæ“ä½œ--å‰é¦ˆå€¼ç›´æ¥åŠ å…¥è¾“å‡º
 		pid->process.feedforward = pid->parameter.kf * (pid->parameter.target);
 		/////////////////////////////////////////////////////////////////////////////////
 
-		////////////////////////////////Ô¤²â²Ù×÷--Ô¤²âÖµÖ±½Ó¼ÓÈëÆ«²î	
+		////////////////////////////////é¢„æµ‹æ“ä½œ--é¢„æµ‹å€¼ç›´æ¥åŠ å…¥åå·®	
 		pid->process.predict = pid->parameter.k_pre * pid->parameter.predict * ABS(pid->parameter.predict);
 		/////////////////////////////////////////////////////////////////////////////////
 
-		////////////////////////////////Æ«²î²Ù×÷	
-			//µÚÒ»²¿·ÖÎªÆÚÍû
-			//µÚ¶ş²¿·ÖÎª·´À¡
-			//µÚÈı²¿·ÖÎªÔ¤²â£¨Ò»°ãÎªÄÚ»··´À¡,¿É²»ÉèÖÃ£©
+		////////////////////////////////åå·®æ“ä½œ	
+			//ç¬¬ä¸€éƒ¨åˆ†ä¸ºæœŸæœ›
+			//ç¬¬äºŒéƒ¨åˆ†ä¸ºåé¦ˆ
+			//ç¬¬ä¸‰éƒ¨åˆ†ä¸ºé¢„æµ‹ï¼ˆä¸€èˆ¬ä¸ºå†…ç¯åé¦ˆ,å¯ä¸è®¾ç½®ï¼‰
 		PID_TYPE temp_bias = (pid->parameter.target) -
 			(pid->parameter.present) -
 			pid->process.predict;
 
-		if (pid->parameter.bias_dead_zone >= 0)
+		if (pid->parameter.bias_dead_zone > 0)
 			temp_bias = (temp_bias < pid->parameter.bias_dead_zone&&
-				temp_bias > -pid->parameter.bias_dead_zone) ? 0 : temp_bias;	//Îó²îËÀÇøÅĞ¶Ï--²»ÓÃ¸Ã¹¦ÄÜÊ±¿ÉÒÔ½«ÆäÖÃ-1
+				temp_bias > -pid->parameter.bias_dead_zone) ? 0 : temp_bias;	//è¯¯å·®æ­»åŒºåˆ¤æ–­--ä¸ç”¨è¯¥åŠŸèƒ½æ—¶å¯ä»¥å°†å…¶ç½®-1 0
 
-		if (pid->parameter.bias_limit >= 0)
+		if (pid->parameter.bias_limit > 0)
 		{
-			temp_bias = (temp_bias > pid->parameter.bias_limit) ? pid->parameter.bias_limit : temp_bias;//Îó²îÏŞ·ù--²»ÓÃ¸Ã¹¦ÄÜÊ±¿ÉÒÔ½«ÆäÖÃ-1
+			temp_bias = (temp_bias > pid->parameter.bias_limit) ? pid->parameter.bias_limit : temp_bias;//è¯¯å·®é™å¹…--ä¸ç”¨è¯¥åŠŸèƒ½æ—¶å¯ä»¥å°†å…¶ç½®-1 0
 			temp_bias = (temp_bias < -pid->parameter.bias_limit) ? -pid->parameter.bias_limit : temp_bias;
 		}
 
-		pid->process.bias = temp_bias;		//¼ÆËãÎó²î
-		////////////////////////////////»ı·Ö²Ù×÷
+		pid->process.bias = temp_bias;		//è®¡ç®—è¯¯å·®
+		////////////////////////////////ç§¯åˆ†æ“ä½œ
 		pid->i_handle(pid);
-		////////////////////////////////Î¢·Ö²Ù×÷	
+		////////////////////////////////å¾®åˆ†æ“ä½œ	
 		pid->d_handle(pid);
-		////////////////////////////////Êä³ö²Ù×÷£¬°üº¬p²Ù×÷
+		////////////////////////////////è¾“å‡ºæ“ä½œï¼ŒåŒ…å«pæ“ä½œ
 		__PID_Out(pid);
 	}
 
  /**
-  * @description: ³õÊ¼»¯pid,ÅäÖÃ±ØÒª²ÎÊı
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
-  * @param {PID_Mode} mode ÔöÁ¿Ê½»òÎ»ÖÃÊ½
-  * @param {PID_TYPE} kp pid²ÎÊı
-  * @param {PID_TYPE} ki pid²ÎÊı
-  * @param {PID_TYPE} kd pid²ÎÊı
+  * @description: åˆå§‹åŒ–pid,é…ç½®å¿…è¦å‚æ•°
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+  * @param {ALL_PID_Mode} mode å¢é‡å¼æˆ–ä½ç½®å¼
+  * @param {PID_TYPE} kp pidå‚æ•°
+  * @param {PID_TYPE} ki pidå‚æ•°
+  * @param {PID_TYPE} kd pidå‚æ•°
   * @return {*}
   */
-	void PID_Init(PID_T* pid, PID_Mode mode, PID_TYPE kp, PID_TYPE ki, PID_TYPE kd)
+	void APID_Init(apid_t* pid, ALL_PID_Mode mode, PID_TYPE kp, PID_TYPE ki, PID_TYPE kd)
 	{
 		PID_Reset(pid);
 		pid->flag.pid_mode = mode;
-		pid->handle = _PID_Hander;//×¢²á´¦Àíº¯Êı
-		//×¢²áº¯Êı
-		if (mode == PID_INCREMENT_NULL) {
-			//pid->handle = _PID_Hander_Increment;
+		pid->handle = _PID_Hander;//æ³¨å†Œå¤„ç†å‡½æ•°
+		//æ³¨å†Œå‡½æ•°
+		if (mode == PID_INCREMENT) {
 			pid->i_handle = i_handle_Increment_Normal;
 			pid->d_handle = d_handle_Increment_Complete;
 		}
 		else {
-			//pid->handle = _PID_Hander_Position;
 			pid->i_handle = i_handle_Position_Normal;
 			pid->d_handle = d_handle_Position_Complete;
 		}
@@ -428,11 +416,11 @@ extern "C"
 
 
  /**
-  * @description: ½«pid¸´Î»³ÉÔ­Ê¼×´Ì¬
-  * @param {PID_T*} pid ÊµÀı¾ä±ú
+  * @description: å°†pidå¤ä½æˆåŸå§‹çŠ¶æ€
+  * @param {apid_t*} pid å®ä¾‹å¥æŸ„
   * @return {*}
   */
-	void PID_Reset(PID_T* pid)
+	void PID_Reset(apid_t* pid)
 	{
 		pid->flag.run_status = PID_ENABLE;
 
@@ -467,40 +455,113 @@ extern "C"
 		pid->process.last_target = 0;
 	}
 
-	/*
 
-	pid->flag.run = 0;
-	pid->flag.use_predict = 0;
+/**
+ * @description: é™åˆ¶ç›®æ ‡å€¼/æœŸæœ›å€¼æœ€å¤§å€¼
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Target_Limit(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.target_limit = value;
+}
+/**
+ * @description: é™åˆ¶è¯¯å·®æœ€å¤§å€¼
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Bias_Limit(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.bias_limit = value;
+}
+/**
+ * @description: è®¾ç½®è¯¯å·®å“åº”æ­»åŒº
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Bias_Dead_Zone(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.bias_dead_zone = value;
+}
 
-	pid->parameter.target = 0;
-	pid->parameter.present = 0;
-	pid->parameter.predict = 0;
+/**
+ * @description: é™åˆ¶ç§¯åˆ†é¡¹æœ€å¤§å€¼
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void APID_Set_Integral_Limit(apid_t* pid, PID_TYPE value);
+/**
+ * @description: é™åˆ¶pidè¾“å‡ºæœ€å¤§å€¼
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Out_Limit(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.out_limit = value;
+}
+/**
+ * @description: è®¾ç½®å‰é¦ˆç³»æ•°
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Feedforward(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.kf = value;
+}
+/**
+ * @description: è®¾ç½®é¢„æµ‹ç³»æ•°
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_KPre(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.k_pre = value;
+}
+/**
+ * @description: é™åˆ¶ç›®æ ‡å€¼/æœŸæœ›å€¼
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Target(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.target = value;
+}
+/**
+ * @description: è®¾ç½®å½“å‰å€¼/åé¦ˆå€¼
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Present(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.present = value;
+}
+/**
+ * @description: è®¾ç½®é¢„æµ‹ç³»æ•°
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @param {PID_TYPE} value
+ * @return {*}
+ */
+void inline APID_Set_Predict(apid_t* pid, PID_TYPE value)
+{
+    pid->parameter.predict = value;
+}
 
-	pid->parameter.kp = 0;
-	pid->parameter.ki = 0;
-	pid->parameter.kd = 0;
-	pid->parameter.kf = 0;
-	pid->parameter.kd_lpf = 0;
-	pid->parameter.kd_pre = 0;
-	pid->parameter.k_pre = 0;
-
-	pid->parameter.target_limit = -1;
-	pid->parameter.bias_limit = -1;
-	pid->parameter.bias_dead_zone = -1;
-	pid->parameter.bias_for_integral = -1;
-	pid->parameter.integral_limit = -1;
-	pid->parameter.out_limit = -1;
-
-	pid->parameter.out = 0;
-	pid->parameter.a = 1;
-
-	pid->process.bias = 0;
-	pid->process.differential_bias = 0;
-	pid->process.lpf_differential_bias = 0;
-	pid->process.feedforward = 0;
-	pid->process.integral_bias = 0;
-	pid->process.last_bias = 0;
-	pid->process.lastlast_bias = 0;
-	pid->process.last_target = 0;
-	*/
+/**
+ * @description: è·å–pidè¾“å‡º
+ * @param {apid_t*} pid å®ä¾‹å¥æŸ„
+ * @return {PID_TYPE}
+ */
+PID_TYPE inline APID_Get_Out(apid_t *pid)
+{
+	return pid->parameter.out;
+}
 

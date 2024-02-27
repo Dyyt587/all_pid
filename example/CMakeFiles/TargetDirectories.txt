@@ -1,0 +1,3 @@
+/home/dyyt/all_pid/example/CMakeFiles/main.dir
+/home/dyyt/all_pid/example/CMakeFiles/edit_cache.dir
+/home/dyyt/all_pid/example/CMakeFiles/rebuild_cache.dir

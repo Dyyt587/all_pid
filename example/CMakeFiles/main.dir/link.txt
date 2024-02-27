@@ -1,0 +1,1 @@
+/usr/bin/cc -rdynamic CMakeFiles/main.dir/main.c.o CMakeFiles/main.dir/home/dyyt/all_pid/src/pid.c.o CMakeFiles/main.dir/home/dyyt/all_pid/src/pid_exfunc.c.o -o main 
