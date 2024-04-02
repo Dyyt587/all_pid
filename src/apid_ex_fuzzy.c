@@ -61,7 +61,8 @@ static void Linear_quantization(apid_fuzzy_ctrl_t *ctrl, PID_TYPE *qValue)
  */
 PID_TYPE Linear_realization(PID_TYPE max_kp, PID_TYPE min_kp, PID_TYPE qValueK)
 {
-    return max_kp;
+    PID_TYPE x = (max_kp - min_kp) *(qValueK)/6;
+    return x;
 }
 /**
  * @brief 隶属度计算函数
@@ -178,14 +179,21 @@ typedef struct
  * @param ctrl
  * @param pid
  */
-void APID_Fuzzy_Fast_Init(apid_fuzzy_ctrl_t *ctrl, APID_Fuzzy_Init_t *init,
- PID_TYPE (*linear_realization)(PID_TYPE max_kp, PID_TYPE min_kp, PID_TYPE qValueK))
+void APID_Fuzzy_Fast_Init(apid_fuzzy_ctrl_t *ctrl, APID_Fuzzy_Init_t *init)
 {
     ctrl->pid = init->pid;
     ctrl->linear_quantization = Linear_quantization;
     ctrl->calc_membership = Calc_membership;
-    ctrl->linear_realization = linear_realization;
+    ctrl->linear_realization = Linear_realization;
     ctrl->pid->user_hook_pre_cplt =Fuzzy_computation;
 }
 
+/**
+ * @brief 更改模糊化，隶属度，反模糊函数
+ * //TODO:
+ */
+void APID_Fuzzy_Change_Func(apid_fuzzy_ctrl_t *ctrl)
+{
+
+}
 #endif

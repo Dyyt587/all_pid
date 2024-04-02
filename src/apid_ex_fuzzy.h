@@ -41,6 +41,8 @@ struct apid_fuzzy_ctrl
     float qKd;    /*Kd增量的影响系数*/
 };
 
+void APID_Fuzzy_Fast_Init(apid_fuzzy_ctrl_t *ctrl, APID_Fuzzy_Init_t *init);
+
 #endif
 #ifdef __cplusplus
 }
