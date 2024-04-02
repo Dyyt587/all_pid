@@ -1,35 +1,46 @@
 /*
  * @Author: dyyt 805207319@qq.com
  * @Date: 2023-05-29 16:03:17
- * @LastEditors: dyyt 805207319@qq.com
- * @LastEditTime: 2023-07-23 01:44:41
+ * @LastEditors: Dyyt587 67887002+Dyyt587@users.noreply.github.com
+ * @LastEditTime: 2024-04-02 09:30:36
  * @FilePath: \undefinedc:\Users\LENOVO\Documents\programs\PID\VS_Project\ConsoleApplication1\ConsoleApplication1\pid.h
  * @Description: pid库
  */
 
-#ifndef _PID_H
-#define _PID_H
+#ifndef _APID_H
+#define _APID_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 #include "float.h"
+#include "stdint.h"
+#include "apid_cfg.h"
 
-#ifndef u8
-#define u8 unsigned char
+#ifndef ABS
+#define ABS(x) ((x > 0) ? x : -x)
 #endif
 
-#define TARGET_MAX FLT_MAX // 默认最大限幅值
-#define OUT_MAX FLT_MAX    // 默认最大限幅值
+    typedef enum
+    {
+        _8 = 0U,
 
-#define PID_TYPE float // 该库使用的数据类型
+        _16,
 
-// 注意，钩子函数对所有pid节点都有效，但每个节点都可自行编写属于自己的函数
-#define USE_HOOK_FIRST 0 // 使用钩子函数，自行编写
-#define USE_HOOK_END 0
+        _32,
+        _64,
 
-#define ABS(x) ((x > 0) ? x : -x)
+        _f,
+        _lf
+    } var_type_e;
+    typedef struct _var_list
+    {
+        const char *name;
+        void *body;
+        var_type_e type;
+        struct _var_list *next;
+    } var_list_t;
 
     enum
     {
@@ -64,7 +75,7 @@ extern "C"
 
     typedef struct
     {
-        u8 run_status;
+        uint8_t run_status;
         ALL_PID_I_Function integral_way;
         ALL_PID_D_Function differential_way;
         ALL_PID_Mode pid_mode; // 判定pid为增量或者位置
@@ -92,8 +103,6 @@ extern "C"
         PID_TYPE bias_for_integral; // 开始积分的误差	--	用于积分分离
         PID_TYPE integral_limit;    // 积分限幅				--	用于抗积分饱和
         PID_TYPE out_limit;         // 输出限幅
- 
-        PID_TYPE k; // 并行pid相加系数          -- 用于并行pid
 
         PID_TYPE out; // 此节点pid输出
 
@@ -101,12 +110,6 @@ extern "C"
         PID_TYPE present; // 当前值
         PID_TYPE predict; // 预测值
 
-#if USE_HOOK_FIRST
-        void (*user_hook_first)(apid_t *pid); // 钩子函数，在计算result之前，其他必要操作之后
-#endif
-#if USE_HOOK_FIRST
-        void (*user_hook_out)(apid_t *pid); // 钩子函数，在计算result之后，限幅之前
-#endif
     } PID_Parameter;
 
     // 增量式pid
@@ -143,8 +146,6 @@ extern "C"
 
     } PID_Process;
 
-    typedef struct _PID_T apid_t;
-
     typedef struct
     {
         ALL_PID_Mode mode;
@@ -154,8 +155,9 @@ extern "C"
         PID_TYPE ki;
         PID_TYPE kd;
     } PID_Config_t;
+    typedef struct _PID_T apid_t;
 
-    typedef struct _PID_T
+    struct _PID_T
     {
         ALL_PID_Flag flag;
         PID_Parameter parameter;
@@ -165,13 +167,65 @@ extern "C"
         void (*i_handle)(apid_t *pid);
         void (*d_handle)(apid_t *pid);
         void (*variable)(apid_t *pid); // 变速积分
-    }apid_t;
+
+#if USE_HOOK_FIRST
+        void (*user_hook_first)(apid_t *pid); // 钩子函数，在计算result之前，其他必要操作之后
+#endif
+#if USE_HOOK_FIRST
+        void (*user_hook_out)(apid_t *pid); // 钩子函数，在计算result之后，限幅之前
+#endif
+#if USE_HOOK_PRE_CPLT
+void (*user_hook_pre_cplt)(apid_t *pid);// 钩子函数，在计算前馈和bais之后，经行pid运算前
+#endif
+    };
+
+    /*用户不该使用该注释下面的函数*/
+    void _PID_Hander(apid_t *pid, PID_TYPE cycle);
+    void i_handle_Increment_Normal(apid_t *pid);
+    void d_handle_Increment_Complete(apid_t *pid);
+    void i_handle_Position_Normal(apid_t *pid);
+    void d_handle_Position_Complete(apid_t *pid);
+/*用户不该使用该注释上面的函数*/
+
+/**
+ * @brief 对于特殊的使用环境，可以使用该宏创建一个匿名的pid实例，但该实例不会被自动初始化，任然需要调用init函数
+ *
+ */
+#define APID_CREATE_STATIC_ANONYMOUS(mode, kp, ki, kd) \
+    &(apid_t)                                          \
+    {                                                  \
+        .flag = {.pid_mode = mode},                    \
+        .parameter = {.kp = kp, .ki = ki, .kd = kd},   \
+    }
+
+/**
+ * @brief 对于特殊的使用环境，可以使用下面宏创建一个匿名的pid实例，该实例不用调用初始化函数
+ *
+ */
+#define APID_CREATE_STATIC_ANONYMOUS_INCREMENT(_kp, _ki, _kd) \
+    &(apid_t)                                                 \
+    {                                                         \
+        .flag = {.pid_mode = PID_INCREMENT},                  \
+        .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},       \
+        .handle = _PID_Hander,                                \
+        .i_handle = i_handle_Increment_Normal,                \
+        .d_handle = d_handle_Increment_Complete,              \
+    }
+#define APID_CREATE_STATIC_ANONYMOUS_POSITION(_kp, _ki, _kd) \
+    &(apid_t)                                                \
+    {                                                        \
+        .flag = {.pid_mode = PID_POSITION},                  \
+        .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},      \
+        .handle = _PID_Hander,                               \
+        .i_handle = i_handle_Position_Normal,                \
+        .d_handle = d_handle_Position_Complete,              \
+    }
 
     void APID_STOP(apid_t *pid);
     void APID_Pause(apid_t *pid);
     void APID_Enable(apid_t *pid);
     void APID_Init(apid_t *pid, ALL_PID_Mode mode, PID_TYPE kp, PID_TYPE ki, PID_TYPE kd);
-	void PID_Reset(apid_t* pid);
+    void APID_Reset(apid_t *pid);
 
     void APID_SET_I_Function(apid_t *pid, ALL_PID_I_Function imode, ...);
     void APID_SET_D_Function(apid_t *pid, ALL_PID_D_Function dmode, ...);
@@ -202,6 +256,32 @@ extern "C"
 
     PID_TYPE APID_Get_Out(apid_t *pid);
 
+    PID_TYPE APID_Get_Target_Limit(apid_t *pid);
+    PID_TYPE APID_Get_Bias_Limit(apid_t *pid);
+    PID_TYPE APID_Get_Bias_Dead_Zone(apid_t *pid);
+    PID_TYPE APID_Get_Integral_Limit(apid_t *pid);
+    PID_TYPE APID_Get_Out_Limit(apid_t *pid);
+
+    PID_TYPE APID_Get_Feedforward(apid_t *pid);
+    PID_TYPE APID_Get_KPre(apid_t *pid);
+
+    PID_TYPE APID_Get_Target(apid_t *pid);
+    PID_TYPE APID_Get_Present(apid_t *pid);
+    PID_TYPE APID_Get_Predict(apid_t *pid);
+
+#define VAR_CMD_REGISTER(var, type)     \
+    do                                  \
+    {                                   \
+        var_register(&var, #var, type); \
+    } while (0)
+#define VAR_CMD_ARR_REGISTER(var, type, size)     \
+    do                                            \
+    {                                             \
+        var_arr_register(&var, #var, type, size); \
+    } while (0)
+    void var_register(void *var, const char *name, var_type_e type);
+    void var_arr_register(void *var, const char *name, var_type_e type, int size);
+    void var_init(void);
 
 #ifdef __cplusplus
 }
