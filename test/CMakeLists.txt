@@ -8,5 +8,9 @@ include_directories(../src/)
 
 add_executable(main main.c  ${DIR_SRCS})
 
+execute_process(COMMAND ls .. 
+                OUTPUT_VARIABLE ls_ret)
+​
+message(STATUS "ls output:\n${ls_ret}")
 
 
