@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.7)
 
 project (demo)
 
@@ -10,7 +10,7 @@ add_executable(main main.c  ${DIR_SRCS})
 
 execute_process(COMMAND ls .. 
                 OUTPUT_VARIABLE ls_ret)
-​
-message(STATUS "ls output:\n${ls_ret}")
+
+                message(STATUS "ls output:\n${ls_ret}")
 
 

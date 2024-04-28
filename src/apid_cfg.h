@@ -26,10 +26,10 @@ extern "C"
 
 
 
-#if APID_USING_FUZZY
-#undef USE_HOOK_PRE_CPLT
-#define USE_HOOK_PRE_CPLT 1
-#endif
+// #if APID_USING_FUZZY
+// #undef USE_HOOK_PRE_CPLT
+// #define USE_HOOK_PRE_CPLT 1
+// #endif
 #ifdef __cplusplus
 }
 #endif

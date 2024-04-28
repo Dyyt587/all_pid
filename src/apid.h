@@ -17,7 +17,7 @@ extern "C"
 #include "float.h"
 #include "stdint.h"
 #include "apid_cfg.h"
-
+#include "apid_ex_fuzzy.h"
 #ifndef ABS
 #define ABS(x) ((x > 0) ? x : -x)
 #endif
@@ -163,10 +163,15 @@ extern "C"
         PID_Parameter parameter;
         PID_Process process;
         PID_TYPE cycle;
+
+        apid_fuzzy_ctrl_t fuzzy;
+
         void (*handle)(apid_t *pid, PID_TYPE cycle);
         void (*i_handle)(apid_t *pid);
         void (*d_handle)(apid_t *pid);
         void (*variable)(apid_t *pid); // 变速积分
+
+        void (*fuzzy_ctrl)(apid_t *pid); //
 
 #if USE_HOOK_FIRST
         void (*user_hook_first)(apid_t *pid); // 钩子函数，在计算result之前，其他必要操作之后
@@ -175,7 +180,7 @@ extern "C"
         void (*user_hook_out)(apid_t *pid); // 钩子函数，在计算result之后，限幅之前
 #endif
 #if USE_HOOK_PRE_CPLT
-void (*user_hook_pre_cplt)(apid_t *pid);// 钩子函数，在计算前馈和bais之后，经行pid运算前
+        void (*user_hook_pre_cplt)(apid_t *pid); // 钩子函数，在计算前馈和bais之后，经行pid运算前
 #endif
     };
 

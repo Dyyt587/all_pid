@@ -35,19 +35,17 @@ static int ruleKd[7][7] = {{PS, NS, NB, NB, NB, NM, PS}, // kd规则表
 
 /*线性量化操作函数,论域{-6，-5，-4，-3，-2，-1，0，1，2，3，4，5，6}*/
 /**
- * @brief
+ * @brief 模糊化
  *
  * @param ctrl
  * @param qValue 量化结果[0]偏差[1]偏差增量
  */
-static void Linear_quantization(apid_fuzzy_ctrl_t *ctrl, PID_TYPE *qValue)
+static void Linear_quantization(apid_fuzzy_ctrl_t *ctrl,PID_TYPE thisError, PID_TYPE deltaError,PID_TYPE *qValue)
 {
-    apid_t *pid = ctrl->pid;
-
-    float thisError;
-    float deltaError;
-    thisError = pid->process.bias;                    /* 获取当前偏差值 */
-    deltaError = pid->process.last_bias / pid->cycle; /* 获取偏差值增量 */
+    // float thisError;
+    // float deltaError;
+    // thisError = pid->process.bias;                    /* 获取当前偏差值 */
+    // deltaError = pid->process.last_bias / pid->cycle; /* 获取偏差值增量 */
 
     qValue[0] = 6.0 * thisError / (ctrl->maximum - ctrl->minimum);
     qValue[1] = 3.0 * deltaError / (ctrl->maximum - ctrl->minimum);
@@ -71,7 +69,7 @@ PID_TYPE Linear_realization(PID_TYPE max_kp, PID_TYPE min_kp, PID_TYPE qValueK)
  * @param qv 目标值
  * @param index 隶属度在模糊表中的索引
  */
-static void Calc_membership(float *msp, float qv, int *index)
+static void Calc_membership(float *msp, float qv, uint8_t *index)
 {
 
     if ((qv >= -NB) && (qv < -NM))
@@ -124,8 +122,9 @@ static void Calc_membership(float *msp, float qv, int *index)
  * @param ctrl
  * @param deltaK
  */
-static void Fuzzy_computation(apid_fuzzy_ctrl_t *ctrl)
+static void Fuzzy_computation(apid_t *pid)
 {
+    apid_fuzzy_ctrl_t *ctrl = &pid->fuzzy;
     float qValue[2] = {0, 0};   // 偏差及其增量的量化值
     uint8_t indexE[2] = {0, 0}; // 偏差隶属度索引
     float msE[2] = {0, 0};      // 偏差隶属度
@@ -135,7 +134,8 @@ static void Fuzzy_computation(apid_fuzzy_ctrl_t *ctrl)
 
     float qValueK[3];
     float deltaK[3] = {0};
-    ctrl->linear_quantization(ctrl, qValue);
+  
+    ctrl->linear_quantization(ctrl, pid->process.bias,pid->process.last_bias / pid->cycle,qValue);
 
     ctrl->calc_membership(msE, qValue[0], indexE);
     ctrl->calc_membership(msEC, qValue[1], indexEC);
@@ -150,42 +150,24 @@ static void Fuzzy_computation(apid_fuzzy_ctrl_t *ctrl)
     deltaK[1] = ctrl->linear_realization(ctrl->maxdKi, ctrl->mindKi, qValueK[1]);
     deltaK[2] = ctrl->linear_realization(ctrl->maxdKd, ctrl->mindKd, qValueK[2]);
 
-    ctrl->pid->parameter.kp += deltaK[0];
-    ctrl->pid->parameter.ki += deltaK[1];
-    ctrl->pid->parameter.kd += deltaK[2];
+    pid->parameter.kp += deltaK[0];
+    pid->parameter.ki += deltaK[1];
+    pid->parameter.kd += deltaK[2];
 }
 
-typedef struct
-{
-    apid_t *pid;
-    float maximum; /*最大输出限幅值*/
-    float minimum; /*最小输出限幅值*/
-
-    float maxdKp; /*Kp增量的最大限值*/
-    float mindKp; /*Kp增量的最小限值*/
-    float qKp;    /*Kp增量的影响系数*/
-
-    float maxdKi; /*Ki增量的最大限值*/
-    float mindKi; /*Ki增量的最小限值*/
-    float qKi;    /*Ki增量的影响系数*/
-
-    float maxdKd; /*Kd增量的最大限值*/
-    float mindKd; /*Kd增量的最小限值*/
-    float qKd;    /*Kd增量的影响系数*/
-} APID_Fuzzy_Init_t;
 /**
  * @brief 初始化模糊控制,使用默认的函数
  *
  * @param ctrl
  * @param pid
  */
-void APID_Fuzzy_Fast_Init(apid_fuzzy_ctrl_t *ctrl, APID_Fuzzy_Init_t *init)
+void APID_Fuzzy_Fast_Init(apid_t* pid, APID_Fuzzy_Init_t *init)
 {
-    ctrl->pid = init->pid;
+    apid_fuzzy_ctrl_t *ctrl = &pid->fuzzy;
     ctrl->linear_quantization = Linear_quantization;
     ctrl->calc_membership = Calc_membership;
     ctrl->linear_realization = Linear_realization;
-    ctrl->pid->user_hook_pre_cplt =Fuzzy_computation;
+    pid->fuzzy_ctrl =Fuzzy_computation;
 }
 
 /**

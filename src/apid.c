@@ -2,7 +2,7 @@
  * @Author: dyyt 805207319@qq.com
  * @Date: 2023-05-29 16:03:17
  * @LastEditors: Dyyt587 67887002+Dyyt587@users.noreply.github.com
- * @LastEditTime: 2024-04-02 09:32:11
+ * @LastEditTime: 2024-04-28 17:31:11
  * @FilePath: \undefinedc:\Users\LENOVO\Documents\programs\PID\VS_Project\ConsoleApplication1\ConsoleApplication1\pid.c
  * @Description:pid库
  */
@@ -380,7 +380,10 @@ extern "C"
 		}
 
 		pid->process.bias = temp_bias; // 计算误差
-
+#if APID_USING_FUZZY
+		if (pid->fuzzy_ctrl)
+			pid->fuzzy_ctrl(pid);
+#endif
 #if USE_HOOK_PRE_CPLT
 		if (pid->user_hook_pre_cplt)
 			pid->user_hook_pre_cplt(pid);
@@ -406,6 +409,7 @@ extern "C"
 	void APID_Init(apid_t *pid, ALL_PID_Mode mode, PID_TYPE kp, PID_TYPE ki, PID_TYPE kd)
 	{
 		APID_Reset(pid);
+		pid->fuzzy_ctrl=0;
 		pid->flag.pid_mode = mode;
 		pid->handle = _PID_Hander; // 注册处理函数
 		// 注册函数
