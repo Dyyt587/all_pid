@@ -2,7 +2,7 @@
  * @Author: dyyt 805207319@qq.com
  * @Date: 2023-05-29 16:03:17
  * @LastEditors: Dyyt587 67887002+Dyyt587@users.noreply.github.com
- * @LastEditTime: 2024-04-28 17:31:11
+ * @LastEditTime: 2024-05-13 10:59:51
  * @FilePath: \undefinedc:\Users\LENOVO\Documents\programs\PID\VS_Project\ConsoleApplication1\ConsoleApplication1\pid.c
  * @Description:pid库
  */
@@ -10,6 +10,7 @@
 #include "apid.h"
 #include "stdio.h"
 #include <stdarg.h>
+#include <string.h>
 #ifdef __cplusplus
 extern "C"
 {
@@ -380,6 +381,8 @@ extern "C"
 		}
 
 		pid->process.bias = temp_bias; // 计算误差
+
+
 #if APID_USING_FUZZY
 		if (pid->fuzzy_ctrl)
 			pid->fuzzy_ctrl(pid);
@@ -394,6 +397,10 @@ extern "C"
 		pid->d_handle(pid);
 		////////////////////////////////输出操作，包含p操作
 		__PID_Out(pid);
+#if APID_USING_AUTO_PID
+		if (pid->auto_pid_handler)
+			pid->auto_pid_handler(pid, cycle);
+#endif
 		// LOG_RAW("t p o:%f,%f,%f\r\n",pid->parameter.target,pid->parameter.present,pid->parameter.out);
 	}
 
@@ -435,6 +442,19 @@ extern "C"
 	 */
 	void APID_Reset(apid_t *pid)
 	{
+		memset(pid,sizeof(apid_t),0);
+#if APID_USING_AUTO_PID
+
+		pid->auto_pid=0;
+		pid->auto_pid_handler=0;
+#endif
+		
+#if APID_USING_AUTO_PID
+
+		pid->auto_pid=0;
+		pid->auto_pid_handler=0;
+#endif
+
 		pid->flag.run_status = PID_ENABLE;
 
 		pid->parameter.target = 0;

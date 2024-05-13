@@ -14,10 +14,20 @@
 extern "C"
 {
 #endif
+typedef struct _PID_T apid_t;
+
 #include "float.h"
 #include "stdint.h"
 #include "apid_cfg.h"
+#if APID_USING_AUTO_PID
+#include "apid_auto_tune_ZNmode.h"
+#endif
+#if APID_USING_FUZZY
 #include "apid_ex_fuzzy.h"
+#endif
+
+
+
 #ifndef ABS
 #define ABS(x) ((x > 0) ? x : -x)
 #endif
@@ -155,7 +165,6 @@ extern "C"
         PID_TYPE ki;
         PID_TYPE kd;
     } PID_Config_t;
-    typedef struct _PID_T apid_t;
 
     struct _PID_T
     {
@@ -164,15 +173,20 @@ extern "C"
         PID_Process process;
         PID_TYPE cycle;
 
-        apid_fuzzy_ctrl_t fuzzy;
 
         void (*handle)(apid_t *pid, PID_TYPE cycle);
         void (*i_handle)(apid_t *pid);
         void (*d_handle)(apid_t *pid);
         void (*variable)(apid_t *pid); // 变速积分
-
+#if APID_USING_FUZZY
+        apid_fuzzy_ctrl_t fuzzy;
         void (*fuzzy_ctrl)(apid_t *pid); //
+#endif
 
+#if APID_USING_AUTO_PID
+        void *auto_pid;
+        void (*auto_pid_handler)(apid_t *pid, PID_TYPE cycle);
+#endif
 #if USE_HOOK_FIRST
         void (*user_hook_first)(apid_t *pid); // 钩子函数，在计算result之前，其他必要操作之后
 #endif

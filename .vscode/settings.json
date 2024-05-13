@@ -1,6 +1,11 @@
 {
   "files.associations": {
-    "pid.h": "c"
+    "pid.h": "c",
+    "stdarg.h": "c",
+    "apid.h": "c",
+    "apid_auto_tune_znmode.h": "c",
+    "apid_cfg.h": "c",
+    "apid_ex_fuzzy.h": "c"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
