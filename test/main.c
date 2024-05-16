@@ -2,7 +2,7 @@
  * @Author: Dyyt587 67887002+Dyyt587@users.noreply.github.com
  * @Date: 2024-02-28 08:04:51
  * @LastEditors: Dyyt587 67887002+Dyyt587@users.noreply.github.com
- * @LastEditTime: 2024-05-13 19:17:59
+ * @LastEditTime: 2024-05-15 16:31:48
  * @FilePath: \all_pid\example\main.c
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -56,5 +56,12 @@ int main(void)
 
     static apid_auto_tune_ZNmode_t tuner;
     apid_auto_tune_ZNmode_init(&pid,&tuner,ZNModeLessOvershoot,300,-20000,20000,20);
+    for (int i = 0; i < 16; ++i)
+    {
+        APID_Set_Present(&pid, 32);//用户定时更新当前值数据
+
+        APID_Hander(&pid, 1);//cycle 如果不使用，建议设置为1,使用请输入两次调用的间隔单位ms
+        printf("pid out1 %f\r\n", APID_Get_Out(&pid));
+    }
     return 0;
 }

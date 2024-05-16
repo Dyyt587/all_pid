@@ -31,6 +31,7 @@ which will be very beneficial during the development phase.
 
 ### All functions
 
+
 | Function    | Description             | State |
 | ----------- | ----------------------- | ----- |
 | pid基础功能 | 基本的增量式，位置式pid | ✅    |
@@ -49,9 +50,4 @@ which will be very beneficial during the development phase.
 
 ## Usage
 
-See test/main,c
-
-
-
-
-
+See test/main.c
