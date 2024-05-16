@@ -442,7 +442,7 @@ extern "C"
 	 */
 	void APID_Reset(apid_t *pid)
 	{
-		memset(pid,sizeof(apid_t),0);
+		memset(pid,0,sizeof(apid_t));
 #if APID_USING_AUTO_PID
 
 		pid->auto_pid=0;

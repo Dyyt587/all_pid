@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 #if APID_USING_FUZZY
-typedef struct _PID_T apid_t;
+//typedef struct _PID_T apid_t;
 
 #include "apid.h"
 
