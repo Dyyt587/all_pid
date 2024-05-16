@@ -3,8 +3,6 @@
 <p align="center">
     <a href="https://github.com/sponsors/thinkyhead"><img alt="Static Badge" src="https://img.shields.io/badge/apid-ALL_LIBS-yellow?style=flat"></a>
     <a href="/LICENSE"><img alt="Static Badge" src="https://img.shields.io/badge/MIT-License-blue?style=flat"></a>
-    <a href="https://github.com/MarlinFirmware/Marlin/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/marlinfirmware/marlin.svg"></a>
-    <a href="https://github.com/MarlinFirmware/Marlin/releases"><img alt="Last Release Date" src="https://img.shields.io/github/release-date/MarlinFirmware/Marlin"></a>
     <a href="https://github.com/MarlinFirmware/Marlin/actions"><img alt="CI Status" src="https://github.com/MarlinFirmware/Marlin/actions/workflows/test-builds.yml/badge.svg"></a>
     <a href="https://github.com/sponsors/thinkyhead"><img alt="Static Badge" src="https://img.shields.io/badge/apid-ALL_LIBS-yellow?style=flat"></a>
     <br />
@@ -33,7 +31,6 @@
 
 ## 所有功能
 
-
 | Function    | Description             | State |
 | ----------- | ----------------------- | ----- |
 | pid基础功能 | 基本的增量式，位置式pid | ✅    |
@@ -49,7 +46,6 @@
 | 不完全微分  |                         | ✅    |
 | 前馈PID     |                         | ✅/✍ |
 | 手自动切换  |                         | ✅    |
-
 
 ## 使用方法
 
