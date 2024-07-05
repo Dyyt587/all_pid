@@ -288,6 +288,9 @@ typedef struct _PID_T apid_t;
     PID_TYPE APID_Get_Present(apid_t *pid);
     PID_TYPE APID_Get_Predict(apid_t *pid);
 
+/**
+ * 下面函数为变量注册函数，通常用于pid在线调参使用
+ */
 #define VAR_CMD_REGISTER(var, type)     \
     do                                  \
     {                                   \
