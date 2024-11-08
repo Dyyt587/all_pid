@@ -42,8 +42,8 @@ static int ruleKd[7][7] = {{PS, NS, NB, NB, NB, NM, PS}, // kd规则表
  */
 static void Linear_quantization(apid_fuzzy_ctrl_t *ctrl,PID_TYPE thisError, PID_TYPE deltaError,PID_TYPE *qValue)
 {
-    // float thisError;
-    // float deltaError;
+    // PID_TYPE thisError;
+    // PID_TYPE deltaError;
     // thisError = pid->process.bias;                    /* 获取当前偏差值 */
     // deltaError = pid->process.last_bias / pid->cycle; /* 获取偏差值增量 */
 
@@ -69,7 +69,7 @@ PID_TYPE Linear_realization(PID_TYPE max_kp, PID_TYPE min_kp, PID_TYPE qValueK)
  * @param qv 目标值
  * @param index 隶属度在模糊表中的索引
  */
-static void Calc_membership(float *msp, float qv, uint8_t *index)
+static void Calc_membership(PID_TYPE *msp, PID_TYPE qv, uint8_t *index)
 {
 
     if ((qv >= -NB) && (qv < -NM))
@@ -125,15 +125,15 @@ static void Calc_membership(float *msp, float qv, uint8_t *index)
 static void Fuzzy_computation(apid_t *pid)
 {
     apid_fuzzy_ctrl_t *ctrl = &pid->fuzzy;
-    float qValue[2] = {0, 0};   // 偏差及其增量的量化值
+    PID_TYPE qValue[2] = {0, 0};   // 偏差及其增量的量化值
     uint8_t indexE[2] = {0, 0}; // 偏差隶属度索引
-    float msE[2] = {0, 0};      // 偏差隶属度
+    PID_TYPE msE[2] = {0, 0};      // 偏差隶属度
 
     uint8_t indexEC[2] = {0, 0}; // 偏差增量隶属度索引
-    float msEC[2] = {0, 0};      // 偏差增量隶属度
+    PID_TYPE msEC[2] = {0, 0};      // 偏差增量隶属度
 
-    float qValueK[3];
-    float deltaK[3] = {0};
+    PID_TYPE qValueK[3];
+    PID_TYPE deltaK[3] = {0};
   
     ctrl->linear_quantization(ctrl, pid->process.bias,pid->process.last_bias / pid->cycle,qValue);
 
@@ -164,10 +164,22 @@ static void Fuzzy_computation(apid_t *pid)
 void APID_Fuzzy_Fast_Init(apid_t* pid, APID_Fuzzy_Init_t *init)
 {
     apid_fuzzy_ctrl_t *ctrl = &pid->fuzzy;
+    
     ctrl->linear_quantization = Linear_quantization;
     ctrl->calc_membership = Calc_membership;
     ctrl->linear_realization = Linear_realization;
     pid->fuzzy_ctrl =Fuzzy_computation;
+
+    ctrl->maxdKd = init->maxdKd;
+    ctrl->mindKd = init->mindKd;
+    ctrl->maxdKi = init->maxdKi;
+    ctrl->mindKi = init->mindKi;
+    ctrl->maxdKp = init->maxdKp;
+    ctrl->mindKp = init->mindKp;
+    ctrl->qKd = init->qKd;
+    ctrl->qKi = init->qKi;
+    ctrl->qKp = init->qKp;
+
 }
 
 /**

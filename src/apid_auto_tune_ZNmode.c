@@ -13,7 +13,7 @@
 	value at the middle of the range.
 */
 
-static float tune_pid(apid_auto_tune_ZNmode_t *tuner, float input, unsigned long cycle);
+static PID_TYPE tune_pid(apid_auto_tune_ZNmode_t *tuner, PID_TYPE input, unsigned long cycle);
 void apid_auto_tune_ZNmode_deinit(apid_t *pid)
 {
 	pid->auto_pid = 0;
@@ -36,7 +36,7 @@ void __auto_pid_handle1(apid_t *pid, PID_TYPE cycle)
 	}
 }
 
-void apid_auto_tune_ZNmode_init(apid_t *pid, apid_auto_tune_ZNmode_t *tuner,ZNMode mode, float targetValue, float low_out_range, float up_out_range, int tuneCycles)
+void apid_auto_tune_ZNmode_init(apid_t *pid, apid_auto_tune_ZNmode_t *tuner,ZNMode mode, PID_TYPE targetValue, PID_TYPE low_out_range, PID_TYPE up_out_range, int tuneCycles)
 {
 	pid->auto_pid = tuner;
 	pid->auto_pid_handler = __auto_pid_handle1;
@@ -51,13 +51,13 @@ void apid_auto_tune_ZNmode_init(apid_t *pid, apid_auto_tune_ZNmode_t *tuner,ZNMo
 }
 
 // Set target input for tuning
-void setTargetInputValue(apid_auto_tune_ZNmode_t *tuner, float target)
+void setTargetInputValue(apid_auto_tune_ZNmode_t *tuner, PID_TYPE target)
 {
 	tuner->target_value = target;
 }
 
 // Set output range
-void setOutputRange(apid_auto_tune_ZNmode_t *tuner, float min, float max)
+void setOutputRange(apid_auto_tune_ZNmode_t *tuner, PID_TYPE min, PID_TYPE max)
 {
 	tuner->minOutput = min;
 	tuner->maxOutput = max;
@@ -81,7 +81,7 @@ void start_tune_loop(apid_auto_tune_ZNmode_t *tuner)
 }
 
 // Run one cycle of the loop
-float tune_pid(apid_auto_tune_ZNmode_t *tuner, float input, unsigned long cycle)
+PID_TYPE tune_pid(apid_auto_tune_ZNmode_t *tuner, PID_TYPE input, unsigned long cycle)
 {
 	// Useful information on the algorithm used (Ziegler-Nichols method/Relay method)
 	// http://www.processcontrolstuff.net/wp-content/uploads/2015/02/relay_autot-2.pdf
@@ -104,7 +104,7 @@ float tune_pid(apid_auto_tune_ZNmode_t *tuner, float input, unsigned long cycle)
 	// long prevMicroseconds = microseconds;
 
 	tuner->microseconds += cycle;
-	// float deltaT = microseconds - prevMicroseconds;
+	// PID_TYPE deltaT = microseconds - prevMicroseconds;
 
 	// Calculate max and min
 	tuner->max = (tuner->max > input) ? tuner->max : input;
@@ -134,11 +134,11 @@ float tune_pid(apid_auto_tune_ZNmode_t *tuner, float input, unsigned long cycle)
 		// Formula given is Ku = 4d / πa
 		// d is the amplitude of the output signal
 		// a is the amplitude of the input signal
-		// float ku = (4.0 * ((tuner->maxOutput - tuner->minOutput) / 2.0)) / (M_PI * (tuner->max - tuner->min) / 2.0);
-		float ku = (4.0 * ((tuner->maxOutput - tuner->minOutput))) / (M_PI * (tuner->max - tuner->min));
+		// PID_TYPE ku = (4.0 * ((tuner->maxOutput - tuner->minOutput) / 2.0)) / (M_PI * (tuner->max - tuner->min) / 2.0);
+		PID_TYPE ku = (4.0 * ((tuner->maxOutput - tuner->minOutput))) / (M_PI * (tuner->max - tuner->min));
 
 		// Calculate Tu (period of output oscillations)
-		float tu = tuner->tLow + tuner->tHigh;
+		PID_TYPE tu = tuner->tLow + tuner->tHigh;
 
 		// How gains are calculated
 		// PID control algorithm needs Kp, Ki, and Kd
@@ -157,7 +157,7 @@ float tune_pid(apid_auto_tune_ZNmode_t *tuner, float input, unsigned long cycle)
 		// Constants
 		// https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
 
-		float kpConstant, tiConstant, tdConstant;
+		PID_TYPE kpConstant, tiConstant, tdConstant;
 		if (tuner->znMode == ZNModeBasicPID)
 		{
 			kpConstant = 0.6;
@@ -220,9 +220,9 @@ float tune_pid(apid_auto_tune_ZNmode_t *tuner, float input, unsigned long cycle)
 }
 
 // Get PID constants after tuning
-float getKp(apid_auto_tune_ZNmode_t *tuner) { return tuner->kp; };
-float getKi(apid_auto_tune_ZNmode_t *tuner) { return tuner->ki; };
-float getKd(apid_auto_tune_ZNmode_t *tuner) { return tuner->kd; };
+PID_TYPE getKp(apid_auto_tune_ZNmode_t *tuner) { return tuner->kp; };
+PID_TYPE getKi(apid_auto_tune_ZNmode_t *tuner) { return tuner->ki; };
+PID_TYPE getKd(apid_auto_tune_ZNmode_t *tuner) { return tuner->kd; };
 
 // Is the tuning loop finished?
 bool isFinished(apid_auto_tune_ZNmode_t *tuner)
