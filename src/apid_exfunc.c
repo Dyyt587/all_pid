@@ -62,7 +62,7 @@ void APID_Set_Integral_Limit(apid_t *pid, PID_TYPE value)
 {
     if (pid->flag.integral_way != PID_INTEGRAL_SATURATION)
     {
-        APID_SET_I_Function(pid, PID_INTEGRAL_SATURATION, value); // 抗饱和积分
+        APID_SET_I_Function( PID_INTEGRAL_SATURATION,pid, value); // 抗饱和积分
     }
     else
     {
@@ -79,10 +79,10 @@ void APID_Set_Integral_Limit(apid_t *pid, PID_TYPE value)
  *       PID_INTEGRAL_SATURATION:pid->parameter.integral_limit //数
  *       PID_INTEGRAL_SPEED:pid->variable //函数
  */
-void APID_SET_I_Function(apid_t *pid, ALL_PID_I_Function imode, ...)
+void APID_SET_I_Function( ALL_PID_I_Function imode,apid_t *pid, ...)
 {
     va_list ap; // 声明一个va_list变量
-	  va_start(ap, imode); // 初始化，第二个参数为最后一个确定的形参      
+	  va_start(ap, pid); // 初始化，第二个参数为最后一个确定的形参      
     pid->flag.integral_way = imode;
     switch (imode)
     {
@@ -170,9 +170,10 @@ void APID_SET_I_Function(apid_t *pid, ALL_PID_I_Function imode, ...)
  *          PID_DIFFERENTIAL_PART:pid->parameter.kd_lpf
  *          PID_DIFFERENTIAL_PREVIOUS:pid->parameter.kd_pre
  */
-void APID_SET_D_Function(apid_t *pid, ALL_PID_D_Function dmode, ...)
+void APID_SET_D_Function( ALL_PID_D_Function dmode,apid_t *pid, ...)
 {
-    va_list ap; // 声明一个va_list变量	  va_start(ap, dmode);    // 初始化，第二个参数为最后一个确定的形参
+    va_list ap; // 声明一个va_list变量
+  	va_start(ap, pid);    // 初始化，第二个参数为最后一个确定的形参
 
     pid->flag.differential_way = dmode;
     switch (dmode)

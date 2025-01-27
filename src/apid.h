@@ -32,7 +32,7 @@ typedef struct _PID_T apid_t;
 #define ABS(x) ((x > 0) ? x : -x)
 #endif
 
-    typedef enum
+    typedef enum: uint8_t
     {
         _8 = 0U,
 
@@ -52,7 +52,7 @@ typedef struct _PID_T apid_t;
         struct _var_list *next;
     } var_list_t;
 
-    enum
+    enum: uint8_t
     {
         STOP = 0U,
         PID_ENABLE,
@@ -60,14 +60,14 @@ typedef struct _PID_T apid_t;
 
     };
 
-    typedef enum ALL_PID_Mode
+    typedef enum ALL_PID_Mode: uint8_t
     {
         PID_POSITION = 0,
         PID_INCREMENT,
 
     } ALL_PID_Mode;
 
-    typedef enum ALL_PID_I_Function
+    typedef enum ALL_PID_I_Function: uint8_t
     {
         PID_INTEGRAL_NORMAL = 0, // 普通积分
         PID_INTEGRAL_SEPARATION, // 积分分离
@@ -76,7 +76,7 @@ typedef struct _PID_T apid_t;
         PID_INTEGRAL_TRAPEZIOD   // 梯形积分
     } ALL_PID_I_Function;
 
-    typedef enum ALL_PID_D_Function
+    typedef enum ALL_PID_D_Function: uint8_t
     {
         PID_DIFFERENTIAL_COMPLETE = 0, // 完全微分
         PID_DIFFERENTIAL_PART,         // 不完全微分
@@ -246,17 +246,17 @@ typedef struct _PID_T apid_t;
     void APID_Init(apid_t *pid, ALL_PID_Mode mode, PID_TYPE kp, PID_TYPE ki, PID_TYPE kd);
     void APID_Reset(apid_t *pid);
 
-    void APID_SET_I_Function(apid_t *pid, ALL_PID_I_Function imode, ...);
-    void APID_SET_D_Function(apid_t *pid, ALL_PID_D_Function dmode, ...);
-#define APID_I_NORMAL(pid) APID_SET_I_Function(pid, PID_INTEGRAL_NORMAL)                       // 普通积分
-#define APID_I_SEPARATION(pid, value) APID_SET_I_Function(pid, PID_INTEGRAL_SEPARATION, value) // 积分分离
-#define APID_I_SATURATION(pid, value) APID_SET_I_Function(pid, PID_INTEGRAL_SATURATION, value) // 抗饱和积分
-#define APID_I_SPEED(pid, func) APID_SET_I_Function(pid, PID_INTEGRAL_SPEED, func)             // 变速积分
-#define APID_I_TRAPEZIOD(pid) APID_SET_I_Function(pid, PID_INTEGRAL_TRAPEZIOD)                 // 梯形积分
+    void APID_SET_I_Function(ALL_PID_I_Function imode, apid_t *pid,  ...);
+    void APID_SET_D_Function(ALL_PID_D_Function dmode, apid_t *pid, ...);
+#define APID_I_NORMAL(pid) APID_SET_I_Function(PID_INTEGRAL_NORMAL, pid)                       // 普通积分
+#define APID_I_SEPARATION(pid, value) APID_SET_I_Function(PID_INTEGRAL_SEPARATION, pid, value) // 积分分离
+#define APID_I_SATURATION(pid, value) APID_SET_I_Function(PID_INTEGRAL_SATURATION, pid, value) // 抗饱和积分
+#define APID_I_SPEED(pid, func) APID_SET_I_Function(PID_INTEGRAL_SPEED, pid, func)             // 变速积分
+#define APID_I_TRAPEZIOD(pid) APID_SET_I_Function(PID_INTEGRAL_TRAPEZIOD, pid)                 // 梯形积分
 
-#define APID_D_COMPLETE(pid) APID_SET_D_Function(pid, PID_DIFFERENTIAL_COMPLETE)               // 完全微分
-#define APID_D_PART(pid, value) APID_SET_D_Function(pid, PID_DIFFERENTIAL_PART, value)         // 不完全微分
-#define APID_D_PREVIOUS(pid, value) APID_SET_D_Function(pid, PID_DIFFERENTIAL_PREVIOUS, value) // 微分先行
+#define APID_D_COMPLETE(pid) APID_SET_D_Function(PID_DIFFERENTIAL_COMPLETE, pid)               // 完全微分
+#define APID_D_PART(pid, value) APID_SET_D_Function(PID_DIFFERENTIAL_PART, pid, value)         // 不完全微分
+#define APID_D_PREVIOUS(pid, value) APID_SET_D_Function(PID_DIFFERENTIAL_PREVIOUS, pid, value) // 微分先行
 
     void APID_Hander(apid_t *pid, PID_TYPE cycle);
 
