@@ -9,7 +9,7 @@
 #define PS 2
 #define PM 4
 #define PB 6
-static int ruleKp[7][7] = {{PB, PB, PM, PM, PS, ZO, ZO}, // kp规则表
+static uint8_t ruleKp[7][7] = {{PB, PB, PM, PM, PS, ZO, ZO}, // kp规则表
                            {PB, PB, PM, PS, PS, ZO, NS},
                            {PM, PM, PM, PS, ZO, NS, NS},
                            {PM, PM, PS, ZO, NS, NM, NM},
@@ -17,7 +17,7 @@ static int ruleKp[7][7] = {{PB, PB, PM, PM, PS, ZO, ZO}, // kp规则表
                            {PS, ZO, NS, NM, NM, NM, NB},
                            {ZO, ZO, NM, NM, NM, NB, NB}};
 
-static int ruleKi[7][7] = {{NB, NB, NM, NM, NS, ZO, ZO}, // ki规则表
+static uint8_t ruleKi[7][7] = {{NB, NB, NM, NM, NS, ZO, ZO}, // ki规则表
                            {NB, NB, NM, NS, NS, ZO, ZO},
                            {NB, NM, NS, NS, ZO, PS, PS},
                            {NM, NM, NS, ZO, PS, PM, PM},
@@ -25,7 +25,7 @@ static int ruleKi[7][7] = {{NB, NB, NM, NM, NS, ZO, ZO}, // ki规则表
                            {ZO, ZO, PS, PS, PM, PB, PB},
                            {ZO, ZO, PS, PM, PM, PB, PB}};
 
-static int ruleKd[7][7] = {{PS, NS, NB, NB, NB, NM, PS}, // kd规则表
+static uint8_t ruleKd[7][7] = {{PS, NS, NB, NB, NB, NM, PS}, // kd规则表
                            {PS, NS, NB, NM, NM, NS, ZO},
                            {ZO, NS, NM, NM, NS, NS, ZO},
                            {ZO, NS, NS, NS, NS, NS, ZO},

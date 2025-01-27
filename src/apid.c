@@ -10,6 +10,7 @@
 #include "apid.h"
 #include "stdio.h"
 #include <stdarg.h>
+#include <limits.h>
 #include <string.h>
 #ifdef __cplusplus
 extern "C"
@@ -118,7 +119,7 @@ extern "C"
 	void i_handle_Increment_Speed(apid_t *pid)
 	{
 		// 变速积分 -- 可自行添加函数或处理算法
-		pid->process.integral_bias = (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
+		pid->process.integral_bias = (pid->process.bias + pid->process.last_bias) / (2 * pid->cycle);
 		pid->process.integral_bias -= (pid->process.bias - pid->process.last_bias) * pid->cycle;
 	}
 	/**
@@ -129,7 +130,7 @@ extern "C"
 	void i_handle_Increment_Trapeziod(apid_t *pid)
 	{
 		// 梯形积分 -- 可自行添加函数或处理算法
-		pid->process.integral_bias = (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
+		pid->process.integral_bias = (pid->process.bias + pid->process.last_bias) / (2 * pid->cycle);
 	}
 
 	/**
@@ -263,7 +264,7 @@ extern "C"
 	void i_handle_Position_Speed(apid_t *pid)
 	{
 		// 变速积分 -- 可自行添加函数或处理算法
-		pid->process.integral_bias += (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
+		pid->process.integral_bias += (pid->process.bias + pid->process.last_bias) / (2 * pid->cycle);
 		pid->process.integral_bias -= (pid->process.bias - pid->process.last_bias) * pid->cycle;
 	}
 	/**
@@ -273,7 +274,7 @@ extern "C"
 	 */
 	void i_handle_Position_Trapeziod(apid_t *pid)
 	{
-		pid->process.integral_bias += (pid->process.bias + pid->process.last_bias) / (2.0f * pid->cycle);
+		pid->process.integral_bias += (pid->process.bias + pid->process.last_bias) / (2 * pid->cycle);
 	}
 
 	/**
