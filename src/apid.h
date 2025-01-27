@@ -198,7 +198,7 @@ typedef struct _PID_T apid_t;
 #endif
     };
 
-    /*用户不该使用该注释下面的函数*/
+/*用户不该使用该注释下面的函数*/
     void _PID_Hander(apid_t *pid, PID_TYPE cycle);
     void i_handle_Increment_Normal(apid_t *pid);
     void d_handle_Increment_Complete(apid_t *pid);
