@@ -9,7 +9,7 @@
 #define PS 2
 #define PM 4
 #define PB 6
-static uint8_t ruleKp[7][7] = {{PB, PB, PM, PM, PS, ZO, ZO}, // kp规则表
+static int8_t ruleKp[7][7] = {{PB, PB, PM, PM, PS, ZO, ZO}, // kp规则表
                            {PB, PB, PM, PS, PS, ZO, NS},
                            {PM, PM, PM, PS, ZO, NS, NS},
                            {PM, PM, PS, ZO, NS, NM, NM},
@@ -17,7 +17,7 @@ static uint8_t ruleKp[7][7] = {{PB, PB, PM, PM, PS, ZO, ZO}, // kp规则表
                            {PS, ZO, NS, NM, NM, NM, NB},
                            {ZO, ZO, NM, NM, NM, NB, NB}};
 
-static uint8_t ruleKi[7][7] = {{NB, NB, NM, NM, NS, ZO, ZO}, // ki规则表
+static int8_t ruleKi[7][7] = {{NB, NB, NM, NM, NS, ZO, ZO}, // ki规则表
                            {NB, NB, NM, NS, NS, ZO, ZO},
                            {NB, NM, NS, NS, ZO, PS, PS},
                            {NM, NM, NS, ZO, PS, PM, PM},
@@ -25,7 +25,7 @@ static uint8_t ruleKi[7][7] = {{NB, NB, NM, NM, NS, ZO, ZO}, // ki规则表
                            {ZO, ZO, PS, PS, PM, PB, PB},
                            {ZO, ZO, PS, PM, PM, PB, PB}};
 
-static uint8_t ruleKd[7][7] = {{PS, NS, NB, NB, NB, NM, PS}, // kd规则表
+static int8_t ruleKd[7][7] = {{PS, NS, NB, NB, NB, NM, PS}, // kd规则表
                            {PS, NS, NB, NM, NM, NS, ZO},
                            {ZO, NS, NM, NM, NS, NS, ZO},
                            {ZO, NS, NS, NS, NS, NS, ZO},
@@ -42,13 +42,13 @@ static uint8_t ruleKd[7][7] = {{PS, NS, NB, NB, NB, NM, PS}, // kd规则表
  */
 static void Linear_quantization(apid_fuzzy_ctrl_t *ctrl,PID_TYPE thisError, PID_TYPE deltaError,PID_TYPE *qValue)
 {
-    // PID_TYPE thisError;
+	    // PID_TYPE thisError;
     // PID_TYPE deltaError;
     // thisError = pid->process.bias;                    /* 获取当前偏差值 */
     // deltaError = pid->process.last_bias / pid->cycle; /* 获取偏差值增量 */
-
-    qValue[0] = 6.0 * thisError / (ctrl->maximum - ctrl->minimum);
-    qValue[1] = 3.0 * deltaError / (ctrl->maximum - ctrl->minimum);
+	
+    qValue[0] = 6.0f * thisError / (ctrl->maximum - ctrl->minimum);
+    qValue[1] = 3.0f * deltaError / (ctrl->maximum - ctrl->minimum);
 }
 /**
  * @brief 反模糊化
@@ -59,7 +59,7 @@ static void Linear_quantization(apid_fuzzy_ctrl_t *ctrl,PID_TYPE thisError, PID_
  */
 PID_TYPE Linear_realization(PID_TYPE max_kp, PID_TYPE min_kp, PID_TYPE qValueK)
 {
-    PID_TYPE x = (max_kp - min_kp) *(qValueK)/6;
+    PID_TYPE x = (max_kp - min_kp) * (qValueK) / 6.0f;
     return x;
 }
 /**
@@ -76,43 +76,43 @@ static void Calc_membership(PID_TYPE *msp, PID_TYPE qv, uint8_t *index)
     {
         index[0] = 0;
         index[1] = 1;
-        msp[0] = -0.5 * qv - 2.0; // y=-0.5x-2.0
-        msp[1] = 0.5 * qv + 3.0;  // y=0.5x+3.0
+        msp[0] = -0.5f * qv - 2.0f; // y=-0.5x-2.0
+        msp[1] = 0.5f * qv + 3.0f;  // y=0.5x+3.0
     }
     else if ((qv >= -NM) && (qv < -NS))
     {
         index[0] = 1;
         index[1] = 2;
-        msp[0] = -0.5 * qv - 1.0; // y=-0.5x-1.0
-        msp[1] = 0.5 * qv + 2.0;  // y=0.5x+2.0
+        msp[0] = -0.5f * qv - 1.0f; // y=-0.5x-1.0
+        msp[1] = 0.5f * qv + 2.0f;  // y=0.5x+2.0
     }
     else if ((qv >= -NS) && (qv < ZO))
     {
         index[0] = 2;
         index[1] = 3;
-        msp[0] = -0.5 * qv;      // y=-0.5x
-        msp[1] = 0.5 * qv + 1.0; // y=0.5x+1.0
+        msp[0] = -0.5f * qv;      // y=-0.5x
+        msp[1] = 0.5f * qv + 1.0f; // y=0.5x+1.0
     }
     else if ((qv >= ZO) && (qv < PS))
     {
         index[0] = 3;
         index[1] = 4;
-        msp[0] = -0.5 * qv + 1.0; // y=-0.5x+1.0
-        msp[1] = 0.5 * qv;        // y=0.5x
+        msp[0] = -0.5f * qv + 1.0f; // y=-0.5x+1.0
+        msp[1] = 0.5f * qv;        // y=0.5x
     }
     else if ((qv >= PS) && (qv < PM))
     {
         index[0] = 4;
         index[1] = 5;
-        msp[0] = -0.5 * qv + 2.0; // y=-0.5x+2.0
-        msp[1] = 0.5 * qv - 1.0;  // y=0.5x-1.0
+        msp[0] = -0.5f * qv + 2.0f; // y=-0.5x+2.0
+        msp[1] = 0.5f * qv - 1.0f;  // y=0.5x-1.0
     }
     else if ((qv >= PM) && (qv <= PB))
     {
         index[0] = 5;
         index[1] = 6;
-        msp[0] = -0.5 * qv + 3.0; // y=-0.5x+3.0
-        msp[1] = 0.5 * qv - 2.0;  // y=0.5x-2.0
+        msp[0] = -0.5f * qv + 3.0f; // y=-0.5x+3.0
+        msp[1] = 0.5f * qv - 2.0f;  // y=0.5x-2.0
     }
 }
 

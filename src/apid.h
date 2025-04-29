@@ -31,8 +31,20 @@ typedef struct _PID_T apid_t;
 #ifndef ABS
 #define ABS(x) ((x > 0) ? x : -x)
 #endif
+#if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6000000)
+#define IS_AC6_COMPILER 1
+#else
+#define IS_AC6_COMPILER 0
+#endif
 
-    typedef enum: uint8_t
+#if IS_AC6_COMPILER
+#define UINT8_PACK  :uint8_t
+
+#else
+#define UINT8_PACK 
+
+#endif
+    typedef enum UINT8_PACK
     {
         _8 = 0U,
 
@@ -52,7 +64,7 @@ typedef struct _PID_T apid_t;
         struct _var_list *next;
     } var_list_t;
 
-    enum: uint8_t
+    enum UINT8_PACK
     {
         STOP = 0U,
         PID_ENABLE,
@@ -60,14 +72,14 @@ typedef struct _PID_T apid_t;
 
     };
 
-    typedef enum ALL_PID_Mode: uint8_t
+    typedef enum ALL_PID_Mode UINT8_PACK
     {
         PID_POSITION = 0,
         PID_INCREMENT,
 
     } ALL_PID_Mode;
 
-    typedef enum ALL_PID_I_Function: uint8_t
+    typedef enum ALL_PID_I_Function UINT8_PACK
     {
         PID_INTEGRAL_NORMAL = 0, // 普通积分
         PID_INTEGRAL_SEPARATION, // 积分分离
@@ -76,7 +88,7 @@ typedef struct _PID_T apid_t;
         PID_INTEGRAL_TRAPEZIOD   // 梯形积分
     } ALL_PID_I_Function;
 
-    typedef enum ALL_PID_D_Function: uint8_t
+    typedef enum ALL_PID_D_Function UINT8_PACK
     {
         PID_DIFFERENTIAL_COMPLETE = 0, // 完全微分
         PID_DIFFERENTIAL_PART,         // 不完全微分

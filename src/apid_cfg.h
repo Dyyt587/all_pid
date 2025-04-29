@@ -14,13 +14,13 @@ extern "C"
 {
 #endif
 
-//#define PID_TYPE float // 该库使用的数据类型
-//#define TARGET_MAX FLT_MAX // 默认最大限幅值
-//#define OUT_MAX FLT_MAX    // 默认最大限幅值
+#define PID_TYPE float // 该库使用的数据类型
+#define TARGET_MAX FLT_MAX // 默认最大限幅值
+#define OUT_MAX FLT_MAX    // 默认最大限幅值
 
-#define PID_TYPE int // 该库使用的数据类型
-#define TARGET_MAX INT_MAX // 默认最大限幅值
-#define OUT_MAX INT_MAX    // 默认最大限幅值
+//#define PID_TYPE int // 该库使用的数据类型
+//#define TARGET_MAX INT_MAX // 默认最大限幅值
+//#define OUT_MAX INT_MAX    // 默认最大限幅值
 
 
 // 注意，钩子函数对所有pid节点都有效，但每个节点都可自行编写属于自己的函数
