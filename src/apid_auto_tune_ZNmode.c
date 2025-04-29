@@ -135,7 +135,7 @@ PID_TYPE tune_pid(apid_auto_tune_ZNmode_t *tuner, PID_TYPE input, unsigned long 
 		// d is the amplitude of the output signal
 		// a is the amplitude of the input signal
 		// PID_TYPE ku = (4.0 * ((tuner->maxOutput - tuner->minOutput) / 2.0)) / (M_PI * (tuner->max - tuner->min) / 2.0);
-		PID_TYPE ku = (4.0 * ((tuner->maxOutput - tuner->minOutput))) / (M_PI * (tuner->max - tuner->min));
+		PID_TYPE ku = (4.0f * ((tuner->maxOutput - tuner->minOutput))) / (M_PI * (tuner->max - tuner->min));
 
 		// Calculate Tu (period of output oscillations)
 		PID_TYPE tu = tuner->tLow + tuner->tHigh;
