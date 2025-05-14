@@ -15,7 +15,7 @@ extern "C"
 #include <stdbool.h>
 #include "apid.h"
 #ifndef M_PI
-#define M_PI 3.14159265358979323846f
+#define M_PI (3.14159265358979323846f)     // 圆周率
 #endif
 //typedef struct _PID_T apid_t;
     typedef enum

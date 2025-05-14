@@ -236,7 +236,7 @@ typedef struct _PID_T apid_t;
 #define APID_CREATE_STATIC_ANONYMOUS_INCREMENT(_kp, _ki, _kd) \
     &(apid_t)                                                 \
     {                                                         \
-        .flag = {.pid_mode = PID_INCREMENT},                  \
+        .flag = {.pid_mode = APID_INCREMENT},                  \
         .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},       \
         .handle = _PID_Hander,                                \
         .i_handle = i_handle_Increment_Normal,                \
@@ -245,7 +245,7 @@ typedef struct _PID_T apid_t;
 #define APID_CREATE_STATIC_ANONYMOUS_POSITION(_kp, _ki, _kd) \
     &(apid_t)                                                \
     {                                                        \
-        .flag = {.pid_mode = PID_POSITION},                  \
+        .flag = {.pid_mode = APID_POSITION},                  \
         .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},      \
         .handle = _PID_Hander,                               \
         .i_handle = i_handle_Position_Normal,                \
@@ -253,7 +253,7 @@ typedef struct _PID_T apid_t;
     }
 #define APID_CREATE_STATIC_ANONYMOUS_INCREMENT_1(_kp, _ki, _kd) \
     {                                                         \
-        .flag = {.pid_mode = PID_INCREMENT},                  \
+        .flag = {.pid_mode = APID_INCREMENT},                  \
         .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},       \
         .handle = _PID_Hander,                                \
         .i_handle = i_handle_Increment_Normal,                \
@@ -261,12 +261,213 @@ typedef struct _PID_T apid_t;
     }
 #define APID_CREATE_STATIC_ANONYMOUS_POSITION_1(_kp, _ki, _kd) \
     {                                                        \
-        .flag = {.pid_mode = PID_POSITION},                  \
+        .flag = {.pid_mode = APID_POSITION},                  \
         .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},      \
         .handle = _PID_Hander,                               \
         .i_handle = i_handle_Position_Normal,                \
         .d_handle = d_handle_Position_Complete,              \
     }
+	/**
+	 * @description: 限制目标值/期望值最大值
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Target_Limit(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.target_limit = value;
+	}
+	/**
+	 * @description: 限制误差最大值
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Bias_Limit(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.bias_limit = value;
+	}
+	/**
+	 * @description: 设置误差响应死区
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Bias_Dead_Zone(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.bias_dead_zone = value;
+	}
+
+	/**
+	 * @description: 限制pid输出最大值
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Out_Limit(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.out_limit = value;
+	}
+	/**
+	 * @description: 设置前馈系数
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Feedforward(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.kf = value;
+	}
+	/**
+	 * @description: 设置预测系数
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_KPre(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.k_pre = value;
+	}
+	/**
+	 * @description: 限制目标值/期望值
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Target(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.target = value;
+	}
+	/**
+	 * @description: 设置当前值/反馈值
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Present(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.present = value;
+	}
+	/**
+	 * @description: 设置预测系数
+	 * @param {apid_t*} pid 实例句柄
+	 * @param {PID_TYPE} value
+	 * @return {*}
+	 */
+static inline	void  APID_Set_Predict(apid_t *pid, PID_TYPE value)
+	{
+		pid->parameter.predict = value;
+	}
+
+	/**
+	 * @description: 获取pid输出
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+static inline	PID_TYPE APID_Get_Out(apid_t *pid)
+	{
+		return pid->parameter.out;
+	}
+
+	/**
+	 * @description: 获取pid目标值/期望值最大值
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+static inline	PID_TYPE APID_Get_Target_Limit(apid_t *pid)
+	{
+		return pid->parameter.target_limit;
+	}
+
+	/**
+	 * @description: 获取pid误差最大值
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+static inline PID_TYPE APID_Get_Bias_Limit(apid_t *pid)
+	{
+		return pid->parameter.bias_limit;
+	}
+
+	/**
+	 * @description: 获取pid误差响应死区
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+static inline	PID_TYPE APID_Get_Bias_Dead_Zone(apid_t *pid)
+	{
+		return pid->parameter.bias_dead_zone;
+	}
+
+	/**
+	 * @description: 获取pid积分项最大值
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+static inline		PID_TYPE APID_Get_Integral_Limit(apid_t *pid)
+	{
+		return pid->parameter.integral_limit;
+	}
+
+	/**
+	 * @description: 获取pid输出最大值
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+	static inline	PID_TYPE APID_Get_Out_Limit(apid_t *pid)
+	{
+		return pid->parameter.out_limit;
+	}
+
+	/**
+	 * @description: 获取pid前馈系数
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+	static inline	PID_TYPE APID_Get_Feedforward(apid_t *pid)
+	{
+		return pid->parameter.kf;
+	}
+
+	/**
+	 * @description: 获取pid预测系数
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+	static inline	PID_TYPE APID_Get_KPre(apid_t *pid)
+	{
+		return pid->parameter.k_pre;
+	}
+
+	/**
+	 * @description: 获取pid期望
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+	static inline	PID_TYPE  APID_Get_Target(apid_t *pid)
+	{
+		return pid->parameter.target;
+	}
+
+	/**
+	 * @description: 获取pid当前值
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+	static inline	PID_TYPE  APID_Get_Present(apid_t *pid)
+	{
+		return pid->parameter.present;
+	}
+
+	/**
+	 * @description: 获取pid预测值
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+	static inline	PID_TYPE  APID_Get_Predict(apid_t *pid)
+	{
+		return pid->parameter.predict;
+	}
 
     void APID_STOP(apid_t *pid);
     void APID_Pause(apid_t *pid);
