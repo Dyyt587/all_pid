@@ -74,8 +74,8 @@ typedef struct _PID_T apid_t;
 
     typedef enum ALL_PID_Mode UINT8_PACK
     {
-        PID_POSITION = 0,
-        PID_INCREMENT,
+        APID_POSITION = 0,
+        APID_INCREMENT,
 
     } ALL_PID_Mode;
 
@@ -244,6 +244,22 @@ typedef struct _PID_T apid_t;
     }
 #define APID_CREATE_STATIC_ANONYMOUS_POSITION(_kp, _ki, _kd) \
     &(apid_t)                                                \
+    {                                                        \
+        .flag = {.pid_mode = PID_POSITION},                  \
+        .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},      \
+        .handle = _PID_Hander,                               \
+        .i_handle = i_handle_Position_Normal,                \
+        .d_handle = d_handle_Position_Complete,              \
+    }
+#define APID_CREATE_STATIC_ANONYMOUS_INCREMENT_1(_kp, _ki, _kd) \
+    {                                                         \
+        .flag = {.pid_mode = PID_INCREMENT},                  \
+        .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},       \
+        .handle = _PID_Hander,                                \
+        .i_handle = i_handle_Increment_Normal,                \
+        .d_handle = d_handle_Increment_Complete,              \
+    }
+#define APID_CREATE_STATIC_ANONYMOUS_POSITION_1(_kp, _ki, _kd) \
     {                                                        \
         .flag = {.pid_mode = PID_POSITION},                  \
         .parameter = {.kp = _kp, .ki = _ki, .kd = _kd},      \

@@ -87,7 +87,7 @@ void APID_SET_I_Function( ALL_PID_I_Function imode,apid_t *pid, ...)
     switch (imode)
     {
     case PID_INTEGRAL_NORMAL:
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->i_handle = i_handle_Increment_Normal;
         }
@@ -97,7 +97,7 @@ void APID_SET_I_Function( ALL_PID_I_Function imode,apid_t *pid, ...)
         }
         break;
     case PID_INTEGRAL_SEPARATION:
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->i_handle = i_handle_Increment_Separation;
         }
@@ -114,7 +114,7 @@ void APID_SET_I_Function( ALL_PID_I_Function imode,apid_t *pid, ...)
 #endif
         break;
     case PID_INTEGRAL_SATURATION:
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->i_handle = i_handle_Increment_Saturation;
         }
@@ -132,7 +132,7 @@ void APID_SET_I_Function( ALL_PID_I_Function imode,apid_t *pid, ...)
         break;
     case PID_INTEGRAL_SPEED:
 
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->i_handle = i_handle_Increment_Speed;
         }
@@ -143,7 +143,7 @@ void APID_SET_I_Function( ALL_PID_I_Function imode,apid_t *pid, ...)
         pid->variable = va_arg(ap, void *);
         break;
     case PID_INTEGRAL_TRAPEZIOD:
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->i_handle = i_handle_Increment_Trapeziod;
         }
@@ -179,7 +179,7 @@ void APID_SET_D_Function( ALL_PID_D_Function dmode,apid_t *pid, ...)
     switch (dmode)
     {
     case PID_DIFFERENTIAL_COMPLETE: // 完全微分
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->d_handle = d_handle_Increment_Complete;
         }
@@ -189,7 +189,7 @@ void APID_SET_D_Function( ALL_PID_D_Function dmode,apid_t *pid, ...)
         }
         break;
     case PID_DIFFERENTIAL_PART: // 不完全微分
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->d_handle = d_handle_Increment_Part;
         }
@@ -206,7 +206,7 @@ void APID_SET_D_Function( ALL_PID_D_Function dmode,apid_t *pid, ...)
 #endif
         break;
     case PID_DIFFERENTIAL_PREVIOUS: // 微分先行
-        if (pid->flag.pid_mode == PID_INCREMENT)
+        if (pid->flag.pid_mode == APID_INCREMENT)
         {
             pid->d_handle = d_handle_Increment_Previous;
         }

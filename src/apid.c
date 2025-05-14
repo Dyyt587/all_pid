@@ -421,7 +421,7 @@ extern "C"
 		pid->flag.pid_mode = mode;
 		pid->handle = _PID_Hander; // 注册处理函数
 		// 注册函数
-		if (mode == PID_INCREMENT)
+		if (mode == APID_INCREMENT)
 		{
 			pid->i_handle = i_handle_Increment_Normal;
 			pid->d_handle = d_handle_Increment_Complete;
