@@ -468,7 +468,18 @@ static inline		PID_TYPE APID_Get_Integral_Limit(apid_t *pid)
 	{
 		return pid->parameter.predict;
 	}
-
+	/**
+	 * @description: 获取pid预测系数
+	 * @param {apid_t*} pid 实例句柄
+	 * @return {PID_TYPE}
+	 */
+	static inline	PID_TYPE APID_Calcu(apid_t *pid,PID_TYPE Present,PID_TYPE Target,PID_TYPE cycle)
+	{
+		pid->parameter.target = Target;
+		pid->parameter.present = Present;
+		pid->handle(pid, cycle);
+		return pid->parameter.out;
+	}
     void APID_STOP(apid_t *pid);
     void APID_Pause(apid_t *pid);
     void APID_Enable(apid_t *pid);
